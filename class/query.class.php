@@ -4,7 +4,7 @@
 */
 class Query
 {
-	private $conexion = NULL;
+	protected $conexion = NULL;
 	function __construct( &$conexion )
 	{
 		$this->conexion = $conexion;

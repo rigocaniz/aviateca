@@ -301,7 +301,7 @@ BEGIN
     SELECT response, message FROM messageApp WHERE idMessage = 'saveSuccess';
 END$$
 
-CREATE PROCEDURE ingresarClaveAeronave( _idAeronave INT, _idClase INT, _precioVoleto DOUBLE(10,2), _capacidad INT, _idUsuario VARCHAR(15) )
+CREATE PROCEDURE ingresarClaseAeronave( _idAeronave INT, _idClase INT, _precioVoleto DOUBLE(10,2), _capacidad INT, _idUsuario VARCHAR(15) )
 BEGIN
 	DECLARE EXIT HANDLER FOR 1062, 1023 BEGIN # IF DUPLICATE
 		SELECT response, message FROM messageApp WHERE idMessage = 'duplicate';

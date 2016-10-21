@@ -4,13 +4,13 @@
 */
 class Ubicacion extends Query
 {
-	private $conexion = NULL;
+	//private $conexion = NULL;
 	private $error    = false;
 	private $message  = "";
 	function __construct( &$conexion )
 	{
 		parent::__construct( $conexion );
-		$this->conexion = $conexion;
+		//$this->conexion = $conexion;
 	}
 
 	public function ingresarContinente( $continente )
