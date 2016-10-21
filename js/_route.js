@@ -7,6 +7,11 @@ miApp.config(function($routeProvider) {
 		templateUrl : 'views/localizacion.php',
 		controller : 'ctrlLocalizacion'
 	})
+
+	.when('/aeropuerto',{
+		templateUrl : 'views/aeropuerto.php',
+		controller : 'ctrlAeropuerto'
+	})
 	.otherwise({
 		redirectTo: '/'
 	});

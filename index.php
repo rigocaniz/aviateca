@@ -36,12 +36,14 @@
 			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 			<ul class="left hide-on-med-and-down">
 				<li><a href="#/localizacion">Localización</a></li>
+				<li><a href="#/aeropuerto">Aeropuerto</a></li>
 			</ul>
 			<ul class="side-nav" id="mobile-demo">
 				<li>
 					<a href="#/"><i class="material-icons left">home</i>Inicio</a>
 				</li>
 				<li><a href="#/localizacion">Localización</a></li>
+				<li><a href="#/aeropuerto">Aeropuerto</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -59,5 +61,6 @@
 <script src="js/_route.js"></script>
 
 <script src="js/localizacion.js"></script>
+<script src="js/aeropuerto.js"></script>
 </body>
 </html>
