@@ -14,6 +14,7 @@ class Query
 	{
 		$error   = false;
 		$message = "";
+		$data    = NULL;
 
 		if ( $rs = $this->conexion->query( $query ) ) {
 			@$this->conexion->next_result();
@@ -21,6 +22,9 @@ class Query
 			if ( $row = $rs->fetch_object() ) {
 				if ( (bool)$row->response ) {
 					$message = $row->message;
+
+					if ( isset( $row->data ) )
+						$data = $row->data;
 				}else{
 					$error   = true;
 					$message = $row->message;
@@ -35,7 +39,7 @@ class Query
 			$message = "Error al realizar la consulta";
 		}
 
-		return (object)array( 'error' => $error, 'message' => $message );
+		return (object)array( 'error' => $error, 'message' => $message, 'data' => $data );
 	}
 
 	public function queryLst( $query )

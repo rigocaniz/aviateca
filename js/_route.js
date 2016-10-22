@@ -12,6 +12,11 @@ miApp.config(function($routeProvider) {
 		templateUrl : 'views/aeropuerto.php',
 		controller : 'ctrlAeropuerto'
 	})
+
+	.when('/aeronave',{
+		templateUrl : 'views/aeronave.php',
+		controller : 'ctrlAeronave'
+	})
 	.otherwise({
 		redirectTo: '/'
 	});

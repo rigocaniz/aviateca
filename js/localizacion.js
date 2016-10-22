@@ -1,4 +1,4 @@
-miApp.controller('ctrlLocalizacion', function($scope, $http){
+miApp.controller('ctrlLocalizacion', function($scope, $http, $timeout){
 	$scope.tab = 1;
 	$scope.lstCiudad = [];
 	$scope.lstContinente = [];
@@ -17,6 +17,9 @@ miApp.controller('ctrlLocalizacion', function($scope, $http){
 		.success(function ( data ) {
 			if ( data ) {
 				$scope.lstContinente = data;
+				$timeout(function () {
+					$scope.idContinente  = $scope.lstContinente[ 0 ].idContinente;
+				});
 			}
 		});
 	})();
@@ -30,6 +33,9 @@ miApp.controller('ctrlLocalizacion', function($scope, $http){
 		.success(function ( data ) {
 			if ( data ) {
 				$scope.lstPais = data;
+				$timeout(function () {
+					$scope.codigoPais = $scope.lstPais[ 0 ].codigoPais;
+				});
 			}
 		});
 	};

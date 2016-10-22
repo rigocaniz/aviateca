@@ -77,20 +77,19 @@ switch ( $data->action ) {
 		echo json_encode( $aeronave->getResponse() );
 		break;
 	
-	case 'ingresarAeronave':
+	case 'guardarAeronave':
 		$aeronave = new Aeronave( $conexion, $session );
-		$aeronave->ingresarAeronave( $data->aeronave, $data->idTipoAeronave );
+
+		if ( $data->nuevo )
+			$aeronave->ingresarAeronave( $data->aeronave, $data->idTipoAeronave, $data->aeronaveClases );
+		
+		else
+			$aeronave->actualizarAeronave( $data->idAeronave, $data->aeronave, $data->idTipoAeronave, $data->idEstadoAeronave, $data->aeronaveClases );
 
 		echo json_encode( $aeronave->getResponse() );
 		break;
 	
-	case 'actualizarEstadoAeronave':
-		$aeronave = new Aeronave( $conexion, $session );
-		$aeronave->actualizarEstadoAeronave( $data->idAeronave, $data->idEstadoAeronave );
-
-		echo json_encode( $aeronave->getResponse() );
-		break;
-	
+	/*
 	case 'ingresarClaseAeronave':
 		$aeronave = new Aeronave( $conexion, $session );
 		$aeronave->ingresarClaseAeronave( $data->idAeronave, $data->idClase, $data->precioVoleto, $data->capacidad );
@@ -103,7 +102,7 @@ switch ( $data->action ) {
 		$aeronave->actualizarClaseAeronave( $data->idAeronave, $data->idClase, $data->precioVoleto, $data->capacidad );
 
 		echo json_encode( $aeronave->getResponse() );
-		break;
+		break;*/
 	
 	case 'ingresarAeronaveDia':
 		$aeronave = new Aeronave( $conexion, $session );
@@ -119,22 +118,16 @@ switch ( $data->action ) {
 		echo json_encode( $aeronave->getResponse() );
 		break;
 
-	case 'lstDia':
+	case 'iniAeronave':
 		$aeronave = new Aeronave( $conexion, $session );
-		
-		echo json_encode( $aeronave->lstDia() );
-		break;
-	
-	case 'lstClase':
-		$aeronave = new Aeronave( $conexion, $session );
-		
-		echo json_encode( $aeronave->lstClase() );
-		break;
-	
-	case 'lstTipoAeronave':
-		$aeronave = new Aeronave( $conexion, $session );
-		
-		echo json_encode( $aeronave->lstTipoAeronave() );
+		$datos = array(
+			'lstDia'            => $aeronave->lstDia(),
+			'lstClase'          => $aeronave->lstClase(),
+			'lstTipoAeronave'   => $aeronave->lstTipoAeronave(),
+			'lstEstadoAeronave' => $aeronave->lstEstadoAeronave(),
+		);
+			
+		echo json_encode( $datos );
 		break;
 	
 	case 'lstAeropuerto':
