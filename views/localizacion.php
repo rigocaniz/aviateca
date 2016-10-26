@@ -6,7 +6,8 @@
 			 	<div class="col s12">
 			 		<h5>
 			 			Continentes <span class="myBadge">{{lstContinente.length}}</span>
-				 		<button type="button" class="btn-floating btn-large waves-effect right waves modal-trigger" href="#mdlContinente" ng-click="continente=''">
+				 		<button type="button" class="btn-floating btn-large waves-effect right waves modal-trigger" 
+				 			href="#mdlContinente" ng-click="continente=''">
 				 			<i class="material-icons">add</i>
 				 		</button>
 			 		</h5>
@@ -81,7 +82,7 @@
 
 
 <!-- Modal Continente -->
-<div id="mdlContinente" class="modal modal-fixed-footer">
+<div id="mdlContinente" class="modal bottom-sheet">
 	<div class="modal-content">
 		<h4>
 			<span class="material-icons">add_circle</span> Agregar Continente
@@ -105,7 +106,7 @@
 </div>
 
 <!-- Modal Pais -->
-<div id="mdlPais" class="modal modal-fixed-footer">
+<div id="mdlPais" class="modal bottom-sheet">
 	<div class="modal-content">
 		<h4>
 			<span class="material-icons">add_circle</span> Agregar Pais
@@ -139,7 +140,7 @@
 </div>
 
 <!-- Modal Ciudad -->
-<div id="mdlCiudad" class="modal modal-fixed-footer">
+<div id="mdlCiudad" class="modal bottom-sheet">
 	<div class="modal-content">
 		<h4>
 			<span class="material-icons">add_circle</span> Agregar Ciudad

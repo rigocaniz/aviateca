@@ -38,6 +38,7 @@
 				<li><a href="#/localizacion">Localización</a></li>
 				<li><a href="#/aeropuerto">Aeropuerto</a></li>
 				<li><a href="#/aeronave">Aeronave</a></li>
+				<li><a href="#/vuelo">Vuelo</a></li>
 			</ul>
 			<ul class="side-nav" id="mobile-demo">
 				<li>
@@ -46,6 +47,7 @@
 				<li><a href="#/localizacion">Localización</a></li>
 				<li><a href="#/aeropuerto">Aeropuerto</a></li>
 				<li><a href="#/aeronave">Aeronave</a></li>
+				<li><a href="#/vuelo">Vuelo</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -65,5 +67,6 @@
 <script src="js/localizacion.js"></script>
 <script src="js/aeropuerto.js"></script>
 <script src="js/aeronave.js"></script>
+<script src="js/vuelo.js"></script>
 </body>
 </html>

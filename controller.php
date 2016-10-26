@@ -103,25 +103,10 @@ switch ( $data->action ) {
 
 		echo json_encode( $aeronave->getResponse() );
 		break;*/
-	
-	case 'ingresarAeronaveDia':
-		$aeronave = new Aeronave( $conexion, $session );
-		$aeronave->ingresarAeronaveDia( $data->idAeronave, $data->idDia, $data->aeropuertoDestino, $data->horaSalida );
-
-		echo json_encode( $aeronave->getResponse() );
-		break;
-	
-	case 'actualizarAeronaveDia':
-		$aeronave = new Aeronave( $conexion, $session );
-		$aeronave->actualizarAeronaveDia( $data->idAeronave, $data->idDia, $data->aeropuertoDestino, $data->horaSalida );
-
-		echo json_encode( $aeronave->getResponse() );
-		break;
 
 	case 'iniAeronave':
 		$aeronave = new Aeronave( $conexion, $session );
 		$datos = array(
-			'lstDia'            => $aeronave->lstDia(),
 			'lstClase'          => $aeronave->lstClase(),
 			'lstTipoAeronave'   => $aeronave->lstTipoAeronave(),
 			'lstEstadoAeronave' => $aeronave->lstEstadoAeronave(),
@@ -148,10 +133,38 @@ switch ( $data->action ) {
 		echo json_encode( $aeronave->lstAeronaveClase( $data->idAeronave ) );
 		break;
 	
-	case 'lstAeronaveDestino':
+	// VUELO
+
+	case 'iniVuelo':
+		$aeronave = new Aeronave( $conexion, $session );
+		$datos = array(
+			'lstTipoAeronave' => $aeronave->lstTipoAeronave(),
+			'lstEstadoVuelo'  => $aeronave->lstEstadoVuelo(),
+		);
+			
+		echo json_encode( $datos );
+		break;
+
+	case 'ingresarVueloAeronave':
+		$aeronave = new Aeronave( $conexion, $session );
+		$aeronave->ingresarVueloAeronave( $data->idAeronave, $data->aeropuertoOrigen, $data->horaSalida, $data->fechaSalida, 
+			$data->aeropuertoDestino, $data->horaAterrizaje, $data->fechaAterrizaje );
+
+		echo json_encode( $aeronave->getResponse() );
+		break;
+	
+	case 'actualizarEstadoVuelo':
+		$aeronave = new Aeronave( $conexion, $session );
+		$aeronave->actualizarEstadoVuelo( $data->idVuelo, $data->comentario, $data->idEstadoVuelo );
+
+		echo json_encode( $aeronave->getResponse() );
+		break;
+
+	case 'lstVueloAeronave':
 		$aeronave = new Aeronave( $conexion, $session );
 		
-		echo json_encode( $aeronave->lstAeronaveDestino( $data->idAeronave ) );
+		echo json_encode( $aeronave->lstVueloAeronave( $data->idEstadoVuelo, $data->aeropuertoOrigen, $data->idAeronave, 
+							$data->idVuelo, $data->idTipoAeronave ) );
 		break;
 
 	default:

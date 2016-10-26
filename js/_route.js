@@ -17,6 +17,16 @@ miApp.config(function($routeProvider) {
 		templateUrl : 'views/aeronave.php',
 		controller : 'ctrlAeronave'
 	})
+
+	.when('/vuelo',{
+		templateUrl : 'views/vuelo.php',
+		controller : 'ctrlVuelo'
+	})
+
+	.when('/pasajero',{
+		templateUrl : 'views/persona.php',
+		controller : 'ctrlPersona'
+	})
 	.otherwise({
 		redirectTo: '/'
 	});

@@ -59,7 +59,7 @@
 
 
 <!-- Modal Aeropuerto -->
-<div id="mdlAeropuerto" class="modal modal-fixed-footer">
+<div id="mdlAeropuerto" class="modal bottom-sheet">
 	<div class="modal-content">
 		<h4>
 			<span class="material-icons">add_circle</span> Agregar Aeropuerto <i class="material-icons">local_airport</i>

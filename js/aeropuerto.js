@@ -19,7 +19,8 @@ miApp.controller('ctrlAeropuerto', function($scope, $http, $timeout){
 			if ( data ) {
 				$scope.lstContinente = data;
 				$timeout(function () {
-					$scope.idContinente  = $scope.lstContinente[ 0 ].idContinente;
+					if ( $scope.lstContinente.length )
+						$scope.idContinente  = $scope.lstContinente[ 0 ].idContinente;
 				});
 			}
 		});
@@ -35,7 +36,8 @@ miApp.controller('ctrlAeropuerto', function($scope, $http, $timeout){
 			if ( data ) {
 				$scope.lstPais = data;
 				$timeout(function () {
-					$scope.codigoPais = $scope.lstPais[ 0 ].codigoPais;
+					if ( $scope.lstPais.length )
+						$scope.codigoPais = $scope.lstPais[ 0 ].codigoPais;
 				});
 			}
 		});
@@ -52,7 +54,8 @@ miApp.controller('ctrlAeropuerto', function($scope, $http, $timeout){
 			if ( data ) {
 				$scope.lstCiudad = data;
 				$timeout(function () {
-					$scope.idCiudad = $scope.lstCiudad[ 0 ].idCiudad;
+					if ( $scope.lstCiudad.length )
+						$scope.idCiudad = $scope.lstCiudad[ 0 ].idCiudad;
 				});
 			}
 		});

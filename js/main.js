@@ -41,5 +41,9 @@ $(function () {
 	$("#mobile-demo>li>a").on('click',function (ev) {
 		$("#sidenav-overlay").click();
 	});
+
+	$(".bottom-sheet:before").on('click',function (ev) {
+		console.log("close jejej");
+	});
 });
 

@@ -6,6 +6,7 @@ class Aeronave extends Query
 {
 	private $error    = false;
 	private $session  = NULL;
+	private $data  	  = NULL;
 	private $message  = "";
 	function __construct( &$conexion, &$session )
 	{
@@ -188,20 +189,22 @@ class Aeronave extends Query
 		}
 	}
 
-	public function ingresarAeronaveDia( $idAeronave, $idDia, $aeropuertoDestino, $horaSalida )
+	public function ingresarVueloAeronave( $idAeronave, $aeropuertoOrigen, $horaSalida, $fechaSalida, $aeropuertoDestino, $horaAterrizaje, $fechaAterrizaje )
 	{
 		$idAeronave        = (int)$idAeronave;
-		$idDia             = (int)$idDia;
 		$aeropuertoDestino = (int)$aeropuertoDestino;
+		$aeropuertoOrigen  = (int)$aeropuertoOrigen;
+		$fechaSalida       = (string)$fechaSalida;
+		$fechaAterrizaje   = (string)$fechaAterrizaje;
 
 		if ( !( $idAeronave > 0 ) ) {
 			$this->error   = true;
 			$this->message = "La aeronave no esta definida";
 		}
 
-		if ( !$this->error AND !( $idDia > 0 ) ) {
+		if ( !$this->error AND !( $aeropuertoOrigen > 0 ) ) {
 			$this->error   = true;
-			$this->message = "Seleccione un día válido";
+			$this->message = "Seleccione un aeropuerto de origen válido";
 		}
 
 		if ( !$this->error AND !( $aeropuertoDestino > 0 ) ) {
@@ -209,38 +212,68 @@ class Aeronave extends Query
 			$this->message = "Seleccione un aeropuerto de destino válido";
 		}
 
+		if ( !$this->error AND $aeropuertoOrigen == $aeropuertoDestino ) {
+			$this->error   = true;
+			$this->message = "El aeropuerto de origen debe ser diferente al de destino";
+		}
+
+		if ( !$this->error AND strlen( $fechaSalida ) != 10 ) {
+			$this->error   = true;
+			$this->message = "Fecha de salida no es válida";
+		}
+
+		if ( !$this->error AND strlen( $fechaAterrizaje ) != 10 ) {
+			$this->error   = true;
+			$this->message = "Fecha de aterrizaje no es válida";
+		}
+
+		if ( !$this->error AND !( strtotime( $fechaSalida . " " . $horaSalida ) > strtotime("now") ) ) {
+			$this->error   = true;
+			$this->message = "La fecha y hora de SALIDA debe ser mayor a la actual";
+		}
+
+		if ( !$this->error AND !( strtotime( $fechaAterrizaje . " " . $horaAterrizaje ) > strtotime( $fechaSalida . " " . $horaSalida ) ) ) {
+			$this->error   = true;
+			$this->message = "La fecha y hora de ATERRIZAJE debe ser mayor a la de salida";
+		}
+
 		if ( !$this->error ) {
-			$sql    = "CALL ingresarAeronaveDia( {$idAeronave}, {$idDia}, {$aeropuertoDestino}, '{$horaSalida}', '{$this->session->getUser()}' )";
+			$sql = "CALL ingresarVueloAeronave( {$idAeronave}, {$aeropuertoOrigen}, '{$horaSalida}', '{$fechaSalida}', 
+						{$aeropuertoDestino}, '{$horaAterrizaje}', '{$fechaAterrizaje}', '{$this->session->getUser()}' )";
 			$result = $this->query( $sql );
 			// RESULT
 			$this->error   = $result->error;
 			$this->message = $result->message;
+
+			if ( $result->data > 0 )
+				$this->data = $this->lstVueloAeronave( 0, 0, 0, $result->data );
 		}
 	}
 
-	public function actualizarAeronaveDia( $idAeronave, $idDia, $aeropuertoDestino, $horaSalida )
+	public function actualizarEstadoVuelo( $idVuelo, $comentario, $idEstadoVuelo )
 	{
-		$idAeronave        = (int)$idAeronave;
-		$idDia             = (int)$idDia;
-		$aeropuertoDestino = (int)$aeropuertoDestino;
+		$idVuelo       = (int)$idVuelo;
+		$comentario    = $this->real_escape_string( $comentario );
+		$idEstadoVuelo = (int)$idEstadoVuelo;
 
-		if ( !( $idAeronave > 0 ) ) {
+		if ( !( $idVuelo > 0 ) ) {
 			$this->error   = true;
-			$this->message = "La aeronave no esta definida";
+			$this->message = "El vuelo no esta definido";
 		}
 
-		if ( !$this->error AND !( $idDia > 0 ) ) {
+		if ( !$this->error AND !( $idEstadoVuelo > 0 ) ) {
 			$this->error   = true;
-			$this->message = "Seleccione un día válido";
+			$this->message = "Seleccione un estado de vuelo válido";
 		}
 
-		if ( !$this->error AND !( $aeropuertoDestino > 0 ) ) {
-			$this->error   = true;
-			$this->message = "Seleccione un aeropuerto de destino válido";
-		}
+		if ( strlen( $comentario ) > 3 )
+			$comentario = "'" . $comentario . "'";
+
+		else
+			$comentario = "NULL";
 
 		if ( !$this->error ) {
-			$sql    = "CALL actualizarAeronaveDia( {$idAeronave}, {$idDia}, {$aeropuertoDestino}, '{$horaSalida}', '{$this->session->getUser()}' )";
+			$sql    = "CALL actualizarEstadoVuelo( {$idVuelo}, {$comentario}, {$idEstadoVuelo}, '{$this->session->getUser()}' )";
 			$result = $this->query( $sql );
 			// RESULT
 			$this->error   = $result->error;
@@ -249,18 +282,6 @@ class Aeronave extends Query
 	}
 
 	/* CAT */
-	public function lstDia()
-	{
-		$lst = array();
-
-		$sql    = "SELECT idDia, dia FROM dia ORDER BY idDia ASC ";
-		$result = $this->queryLst( $sql );
-		while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
-			$lst[] = $row;
-		}
-
-		return $lst;
-	}
 
 	public function lstClase()
 	{
@@ -293,6 +314,19 @@ class Aeronave extends Query
 		$lst = array();
 
 		$sql    = "SELECT idEstadoAeronave, estadoAeronave FROM estadoAeronave";
+		$result = $this->queryLst( $sql );
+		while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
+			$lst[] = $row;
+		}
+
+		return $lst;
+	}
+
+	public function lstEstadoVuelo()
+	{
+		$lst = array();
+
+		$sql    = "SELECT idEstadoVuelo, estadoVuelo FROM estadoVuelo";
 		$result = $this->queryLst( $sql );
 		while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
 			$lst[] = $row;
@@ -341,13 +375,16 @@ class Aeronave extends Query
 		$where            = "";
 
 		if ( $idTipoAeronave > 0 )
-			$where = " WHERE idTipoAeronave = $idTipoAeronave ";
+			$where .= " AND idTipoAeronave = $idTipoAeronave ";
 
 		if ( $idEstadoAeronave > 0 )
-			$where = " WHERE idEstadoAeronave = $idEstadoAeronave ";
+			$where .= " AND idEstadoAeronave = $idEstadoAeronave ";
 
 		if ( $idAeronave > 0 )
-			$where = " WHERE idAeronave = $idAeronave ";
+			$where .= " AND idAeronave = $idAeronave ";
+
+		if ( strlen( $where ) )
+			$where = " WHERE " . substr( $where, 4 );
 
 		$sql    = "SELECT * FROM vstAeronave $where ";
 		$result = $this->queryLst( $sql );
@@ -380,13 +417,62 @@ class Aeronave extends Query
 		return $lst;
 	}
 
-	public function lstAeronaveDestino( $idAeronave = 0 )
+	public function lstVueloAeronave( $idEstadoVuelo = 0, $aeropuertoOrigen = 0, $idAeronave = 0, $idVuelo = 0, $idTipoAeronave = 0 )
 	{
-		$lst        = array();
-		$idAeronave = (int)$idAeronave;
+		$lst   = array();
+		$where = "";
 
-		if ( $idAeronave > 0 ) {
-			$sql    = "SELECT * FROM vstAeronaveDestino WHERE idAeronave = {$idAeronave} ";
+		$idEstadoVuelo    = (int)$idEstadoVuelo;
+		$aeropuertoOrigen = (int)$aeropuertoOrigen;
+		$idAeronave       = (int)$idAeronave;
+		$idVuelo          = (int)$idVuelo;
+		$idTipoAeronave   = (int)$idTipoAeronave;
+
+		if ( $idEstadoVuelo > 0 )
+			$where .= " AND idEstadoVuelo = $idEstadoVuelo ";
+
+		if ( $aeropuertoOrigen > 0 )
+			$where .= " AND aeropuertoOrigen = $aeropuertoOrigen ";
+
+		if ( $idAeronave > 0 )
+			$where .= " AND idAeronave = $idAeronave ";
+
+		if ( $idVuelo > 0 )
+			$where .= " AND idVuelo = $idVuelo ";
+
+		if ( $idTipoAeronave > 0 )
+			$where .= " AND idTipoAeronave = $idTipoAeronave ";
+
+		if ( strlen( $where ) > 3 ) {
+			$where = substr($where, 5);
+			$sql = "SELECT 
+				idVuelo,
+			    idAeronave,
+			    aeronave,
+			    idTipoAeronave,
+			    tipoAeronave,
+			    idEstadoAeronave,
+			    estadoAeronave,
+			    aeropuertoOrigen,
+			    horaSalida,
+			    fechaSalida,
+			    origen,
+			    ciudadOrigen,
+			    paisOrigen,
+			    continenteOrigen,
+				aeropuertoDestino,
+			    horaAterrizaje,
+			    fechaAterrizaje,
+			    destino,
+			    ciudadDestino,
+			    paisDestino,
+			    continenteDestino,
+			    idEstadoVuelo,
+			    estadoVuelo,
+			    fechaEstado
+			FROM vstVueloAeronave WHERE $where 
+			ORDER BY fechaEstado DESC";
+
 			$result = $this->queryLst( $sql );
 			while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
 				$lst[] = $row;
@@ -398,7 +484,7 @@ class Aeronave extends Query
 
 	public function getResponse()
 	{
-		return (object)array( "response" => !$this->error, "message" => $this->message );
+		return (object)array( "response" => !$this->error, "message" => $this->message, "data" => $this->data );
 	}
 }
 ?>
