@@ -69,7 +69,7 @@ switch ( $data->action ) {
 		echo json_encode( $response );
 		break;
 
-	# Aeronave / Aeropuerto
+	# Aeropuerto
 	case 'ingresarAeropuerto':
 		$aeronave = new Aeronave( $conexion, $session );
 		$aeronave->ingresarAeropuerto( $data->idCiudad, $data->aeropuerto );
@@ -77,6 +77,18 @@ switch ( $data->action ) {
 		echo json_encode( $aeronave->getResponse() );
 		break;
 	
+	# Aeronave
+	case 'iniAeronave':
+		$aeronave = new Aeronave( $conexion, $session );
+		$datos = array(
+			'lstClase'          => $aeronave->lstClase(),
+			'lstTipoAeronave'   => $aeronave->lstTipoAeronave(),
+			'lstEstadoAeronave' => $aeronave->lstEstadoAeronave(),
+		);
+			
+		echo json_encode( $datos );
+		break;
+
 	case 'guardarAeronave':
 		$aeronave = new Aeronave( $conexion, $session );
 
@@ -88,33 +100,7 @@ switch ( $data->action ) {
 
 		echo json_encode( $aeronave->getResponse() );
 		break;
-	
-	/*
-	case 'ingresarClaseAeronave':
-		$aeronave = new Aeronave( $conexion, $session );
-		$aeronave->ingresarClaseAeronave( $data->idAeronave, $data->idClase, $data->precioVoleto, $data->capacidad );
 
-		echo json_encode( $aeronave->getResponse() );
-		break;
-	
-	case 'actualizarClaseAeronave':
-		$aeronave = new Aeronave( $conexion, $session );
-		$aeronave->actualizarClaseAeronave( $data->idAeronave, $data->idClase, $data->precioVoleto, $data->capacidad );
-
-		echo json_encode( $aeronave->getResponse() );
-		break;*/
-
-	case 'iniAeronave':
-		$aeronave = new Aeronave( $conexion, $session );
-		$datos = array(
-			'lstClase'          => $aeronave->lstClase(),
-			'lstTipoAeronave'   => $aeronave->lstTipoAeronave(),
-			'lstEstadoAeronave' => $aeronave->lstEstadoAeronave(),
-		);
-			
-		echo json_encode( $datos );
-		break;
-	
 	case 'lstAeropuerto':
 		$aeronave = new Aeronave( $conexion, $session );
 		
@@ -134,7 +120,6 @@ switch ( $data->action ) {
 		break;
 	
 	// VUELO
-
 	case 'iniVuelo':
 		$aeronave = new Aeronave( $conexion, $session );
 		$datos = array(
@@ -167,6 +152,21 @@ switch ( $data->action ) {
 							$data->idVuelo, $data->idTipoAeronave ) );
 		break;
 
+	// INCIDENTES
+	case 'ingresarIncidente':
+		$aeronave = new Aeronave( $conexion, $session );
+		$aeronave->ingresarIncidente( $data->idVuelo, $data->incidente );
+
+		echo json_encode( $aeronave->getResponse() );
+		break;
+
+	case 'lstIncidente':
+		$aeronave = new Aeronave( $conexion, $session );
+		
+		echo json_encode( $aeronave->lstIncidente( $data->idVuelo ) );
+		break;
+
+	// DEFAULT
 	default:
 		echo json_encode( array( "response" => 0, "msg" => "Opción no válida" ) );
 		break;

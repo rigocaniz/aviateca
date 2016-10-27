@@ -109,7 +109,7 @@
 <div id="mdlPais" class="modal bottom-sheet">
 	<div class="modal-content">
 		<h4>
-			<span class="material-icons">add_circle</span> Agregar Pais
+			<span class="material-icons">add_circle</span> Agregar Pais ({{$parent.getItem(lstContinente, 'idContinente', idContinente).continente}})
 		</h4>
 		<div class="divider"></div>
 		<form class="col s12">
@@ -143,7 +143,7 @@
 <div id="mdlCiudad" class="modal bottom-sheet">
 	<div class="modal-content">
 		<h4>
-			<span class="material-icons">add_circle</span> Agregar Ciudad
+			<span class="material-icons">add_circle</span> Agregar Ciudad ({{$parent.getItem(lstPais, 'codigoPais', codigoPais).pais}})
 		</h4>
 		<div class="divider"></div>
 		<div class="col s12">

@@ -13,11 +13,11 @@
 		 					<span class="badge">3</span>
 		 				</span>
 		 				<span ng-show="idEstadoVuelo==3">
-		 					<i class="material-icons">flag</i> Finalizados
+		 					<i class="material-icons">flight_land</i> Finalizados
 		 					<span class="badge">3</span>
 		 				</span>
 		 				<span ng-show="idEstadoVuelo==5">
-		 					<i class="material-icons">error_outline</i> Cancelados
+		 					<i class="material-icons">close</i> Cancelados
 		 					<span class="badge">3</span>
 		 				</span>
 		 				<span class="badge-in">{{lstVueloAeronave.length}}</span>
@@ -43,12 +43,12 @@
 							</li>
 							<li>
 								<a class="btn-floating deep-purple darken-1" ng-click="idEstadoVuelo=3">
-									<i class="material-icons">flag</i>
+									<i class="material-icons">flight_land</i>
 								</a>
 							</li>
 							<li>
 								<a class="btn-floating red" ng-click="idEstadoVuelo=5">
-									<i class="material-icons">error_outline</i>
+									<i class="material-icons">close</i>
 								</a>
 							</li>
 						</ul>
@@ -91,9 +91,22 @@
 						<td>{{item.ciudadDestino}}, {{item.paisDestino}}</td>
 						<td>{{item.horaAterrizaje}}</td>
 						<td>{{item.tipoAeronave}}</td>
-						<td>
-							<button type="button" class="btn red lighten-1 tooltip" data-title="Cancelar" ng-click="cancelarViaje( item )">
-								<i class="material-icons">delete</i>
+						<td style="min-width: 150px">
+							<button type="button" class="btn min grey darken-2 tooltip" data-title="Incidente" 
+								ng-click="openIncidente( item )" ng-show="item.idEstadoVuelo!=5">
+								<i class="material-icons">announcement</i>
+							</button>
+							<button type="button" class="btn min green lighten-1 tooltip" data-title="Viajar" 
+								ng-click="openCambiarEstadoVuelo( 2, item.idVuelo, $index )" ng-show="item.idEstadoVuelo==1">
+								<i class="material-icons">flight_takeoff</i>
+							</button>
+							<button type="button" class="btn min deep-purple darken-1 tooltip" data-title="Aterrizar" 
+								ng-click="openCambiarEstadoVuelo( 3, item.idVuelo, $index )" ng-show="item.idEstadoVuelo==2">
+								<i class="material-icons">flight_land</i>
+							</button>
+							<button type="button" class="btn min red lighten-1 tooltip" data-title="Cancelar" 
+								ng-click="openCambiarEstadoVuelo( 5, item.idVuelo, $index )" ng-show="item.idEstadoVuelo==1">
+								<i class="material-icons">close</i>
 							</button>
 						</td>
 					</tr>
@@ -109,8 +122,7 @@
 	<div class="modal-content">
 		<h4>
 			<i class="material-icons">local_airport</i>
-			Aeronave › Destinos
-			<i class="material-icons">place</i> 
+			Agregar Vuelo
 		</h4>
 		<div class="hr"></div>
 		<div class="col s12">
@@ -249,6 +261,110 @@
 			<i class="material-icons left">done</i>
 			Guardar
 		</button>
+		<button class="waves-effect btn-flat grey lighten-3 right modal-action modal-close">
+			<i class="material-icons left">close</i>
+			Salir
+		</button>
+	</div>
+</div>
+
+<!-- Modal CAMBIAR ESTADO -->
+<div id="mdlEstadoVuelo" class="modal bottom-sheet">
+	<div class="modal-content">
+		<h4>
+			Cambiar Estado Vuelo: 
+			<b>
+				<span ng-show="vuelo.idEstadoVuelo==2">
+					Viajar <i class="material-icons">flight_takeoff</i>
+				</span>
+				<span ng-show="vuelo.idEstadoVuelo==3">
+					Aterrizar <i class="material-icons">flight_land</i>
+				</span>
+				<span ng-show="vuelo.idEstadoVuelo==5">
+					Cancelar <i class="material-icons">close</i>
+				</span>
+			</b>
+		</h4>
+		<div class="hr"></div>
+		<div class="col s12">
+			<form class="col s12">
+				<div class="row">
+					<b class="col m2 s12">Comentario</b>
+					<div class="col m10 s12">
+						<textarea ng-model="vuelo.comentario" class="myTextarea" rows="5"></textarea>
+					</div>
+				</div>
+			</form>			
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="waves-effect green btn left" ng-click="cambiarEstadoVuelo()">
+			<i class="material-icons left">done</i>
+			Confirmar
+		</button>
+		<button class="waves-effect btn-flat grey lighten-3 right modal-action modal-close">
+			<i class="material-icons left">close</i>
+			Salir
+		</button>
+	</div>
+</div>
+
+<!-- Modal INCIDENTES -->
+<div id="mdlIncidente" class="modal bottom-sheet">
+	<div class="modal-content">
+		<h4>
+			<i class="material-icons">announcement</i>
+			Incidentes
+		</h4>
+		<div class="hr"></div>
+		<div class="col s12" ng-show="!nuevoIncidente">
+			<button class="waves-effect green btn left" ng-click="nuevoIncidente=true">
+				<i class="material-icons left">add</i>
+				Agregar Incidente
+			</button>
+		</div>
+		<div class="col s12" ng-show="nuevoIncidente">
+			<div class="row">
+				<b class="col m2 s12">Incidente</b>
+				<div class="col m10 s12">
+					<textarea ng-model="incidente" class="myTextarea" rows="5"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col offset-m2 m8 s12">
+					<button class="waves-effect green btn left" ng-click="guardarIncidente()">
+						<i class="material-icons left">done</i>
+						Guardar Incidente
+					</button>
+					<button class="waves-effect btn grey" ng-click="nuevoIncidente=false" style="margin-left: 7px">
+						<i class="material-icons left">close</i>
+						Cancelar
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- LISTA DE INCIDENTES -->
+		<div class="col s12" ng-show="!nuevoIncidente">
+			<table class="responsive-table">
+				<thead>
+					<tr>
+						<th>Incidente</th>
+						<th>Fecha</th>
+						<th>Usuario</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="item in lstIncidente">
+						<td>{{item.incidente}}</td>
+						<td>{{item.fechaHora}}</td>
+						<td>{{item.nombreCompleto}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="modal-footer">
 		<button class="waves-effect btn-flat grey lighten-3 right modal-action modal-close">
 			<i class="material-icons left">close</i>
 			Salir

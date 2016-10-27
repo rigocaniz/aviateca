@@ -1,15 +1,24 @@
 miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 	$scope.idEstadoVuelo    = '';
 	$scope.idTipoAeronave   = '';
-	$scope.idAeronave   	= '';
+	$scope.idAeronave       = '';
 	$scope.lstTipoAeronave  = [];
 	$scope.lstEstadoVuelo   = [];
 	$scope.lstVueloAeronave = [];
 	$scope.lstAeronave      = [];
 	$scope.lstHora          = [];
 	$scope.lstMinuto        = [];
-	$scope.horaOrigen = $scope.minutoOrigen = $scope.horaDestino = $scope.minutoDestino;
+	$scope.lstContinente    = [];
+	$scope.lstPais          = [];
+	$scope.lstCiudad        = [];
+	$scope.lstAeropuerto    = [];
+	$scope.idContinente     = "";
+	$scope.codigoPais       = '';
+	$scope.idCiudad         = '';
+	$scope.idAeropuerto     = '';
+	$scope.vuelo 			= {};
 
+	$scope.horaOrigen = $scope.minutoOrigen = $scope.horaDestino = $scope.minutoDestino;
 
 	for (var i = 0; i < 24; i++) {
 		var hora = ( i > 9 ? i : '0' + i );
@@ -20,7 +29,6 @@ miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 		var minuto = ( i == 0 ? '00' : i );
 		$scope.lstMinuto.push( minuto.toString() );
 	}
-
 
 	($scope.iniVuelo = function () {
 		$scope.horaOrigen    = $scope.lstHora[ 0 ];
@@ -82,37 +90,6 @@ miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 		});
 	};
 
-	$scope.$watch('idEstadoVuelo', function (_new) {
-		$scope.idAeropuertoDestino = '';
-
-		if ( _new ){
-			$scope.getVuelos();
-		}
-		else{ 
-			$scope.lstVueloAeronave = [];
-		}
-	});
-
-	$scope.$watch('idTipoAeronave', function (_new) {
-		$scope.idAeronave = "";
-		if ( _new ){
-			$scope.getAeronaves();
-		}
-	});
-
-
-
-
-
-	$scope.lstContinente = [];
-	$scope.lstPais       = [];
-	$scope.lstCiudad     = [];
-	$scope.lstAeropuerto = [];
-	$scope.idContinente  = "";
-	$scope.codigoPais    = '';
-	$scope.idCiudad      = '';
-	$scope.idAeropuerto  = '';
-
 	$scope.placeAeronave = function () {
 		$("#mdlDestino").openModal();
 	};
@@ -141,7 +118,7 @@ miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 			$("#loading").hide();
 
 			if ( data.response ) {
-				if ( data.data.length )
+				if ( data.data.length && $scope.idEstadoVuelo == 1 )
 					$scope.lstVueloAeronave.unshift( data.data[ 0 ] );
 
 				Materialize.toast(data.message, 5000);
@@ -155,7 +132,101 @@ miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 		});
 	};
 
-	//
+	// ESTADO VUELO
+	$scope.openCambiarEstadoVuelo = function ( idEstadoVuelo, idVuelo, index ) {
+		$scope.vuelo = {
+			comentario 	  : "",
+			idEstadoVuelo : angular.copy( idEstadoVuelo ),
+			idVuelo       : angular.copy( idVuelo ),
+			index         : angular.copy( index )
+		};
+		$("#mdlEstadoVuelo").openModal();
+	};
+
+	$scope.cambiarEstadoVuelo = function () {
+		$("#loading").show();
+
+		var datos = {
+			action        : 'actualizarEstadoVuelo',
+			comentario    : $scope.vuelo.comentario,
+			idEstadoVuelo : $scope.vuelo.idEstadoVuelo,
+			idVuelo       : $scope.vuelo.idVuelo,
+		};
+
+		$http.post('controller.php', datos)
+		.success(function ( data ) {
+			$("#loading").hide();
+
+			if ( data.response ) {
+				$scope.lstVueloAeronave.splice( $scope.vuelo.index, 1 );
+				Materialize.toast(data.message, 5000);
+				$("#mdlEstadoVuelo").closeModal();
+				$scope.vuelo = {};
+			}else{
+				Materialize.toast(data.message, 7000);
+			}
+		})
+		.error(function () {
+			$("#loading").hide();
+		});
+	};
+
+	// ESTADO VUELO
+	$scope.lstIncidente = [];
+	$scope.incidente    = "";
+	$scope.nuevoIncidente = false;
+	$scope.openIncidente = function ( vuelo ) {
+		$scope.incidente      = "";
+		$scope.vuelo          = angular.copy( vuelo );
+		$scope.lstIncidente   = [];
+		$scope.getIncidentes();
+		$("#mdlIncidente").openModal();
+	};
+
+	$scope.getIncidentes = function () {
+		$http.post('controller.php', {
+			action  : 'lstIncidente',
+			idVuelo : $scope.vuelo.idVuelo
+		})
+		.success(function ( data ) {
+			$("#loading").hide();
+
+			if ( data ) {
+				$scope.lstIncidente = data;
+			}
+		})
+		.error(function () {
+			$("#loading").hide();
+		});
+		
+	};
+
+	$scope.guardarIncidente = function () {
+		$("#loading").show();
+
+		$http.post('controller.php', {
+			action    : 'ingresarIncidente',
+			incidente : $scope.incidente,
+			idVuelo   : $scope.vuelo.idVuelo
+		})
+		.success(function ( data ) {
+			$("#loading").hide();
+
+			if ( data.response ) {
+				$scope.incidente      = "";
+				$scope.nuevoIncidente = false;
+				Materialize.toast(data.message, 5000);
+				$scope.getIncidentes();
+			}else{
+				Materialize.toast(data.message, 7000);
+			}
+		})
+		.error(function () {
+			$("#loading").hide();
+		});
+	};
+
+	// LOCALIZACION
 	($scope.getContinentes = function () {
 		$scope.lstContinente = [];
 		$http.post('controller.php', {
@@ -285,6 +356,24 @@ miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 		});
 	};
 
+	$scope.$watch('idEstadoVuelo', function (_new) {
+		$scope.idAeropuertoDestino = '';
+
+		if ( _new ){
+			$scope.getVuelos();
+		}
+		else{ 
+			$scope.lstVueloAeronave = [];
+		}
+	});
+
+	$scope.$watch('idTipoAeronave', function (_new) {
+		$scope.idAeronave = "";
+		if ( _new ){
+			$scope.getAeronaves();
+		}
+	});
+
 	$scope.$watch('idContinenteOrigen', function (_new) {
 		$scope.codigoPaisOrigen = '';
 		if ( _new > 0 ) {
@@ -350,9 +439,9 @@ miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 	});
 
 	$('.modal-trigger').leanModal({
-		dismissible: true, // Modal can be dismissed by clicking outside of the modal
-		starting_top: '0', // Starting top style attribute
-		ending_top: '10%', // Ending top style attribute
+		dismissible: true,
+		starting_top: '0',
+		ending_top: '10%',
 	});
 
 	$('.datepicker').pickadate({

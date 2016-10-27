@@ -253,7 +253,7 @@ class Aeronave extends Query
 	public function actualizarEstadoVuelo( $idVuelo, $comentario, $idEstadoVuelo )
 	{
 		$idVuelo       = (int)$idVuelo;
-		$comentario    = $this->real_escape_string( $comentario );
+		$comentario    = $this->conexion->real_escape_string( $comentario );
 		$idEstadoVuelo = (int)$idEstadoVuelo;
 
 		if ( !( $idVuelo > 0 ) ) {
@@ -264,6 +264,11 @@ class Aeronave extends Query
 		if ( !$this->error AND !( $idEstadoVuelo > 0 ) ) {
 			$this->error   = true;
 			$this->message = "Seleccione un estado de vuelo válido";
+		}
+
+		if ( !$this->error AND $idEstadoVuelo == 5 AND strlen( $comentario ) < 4 ) {
+			$this->error   = true;
+			$this->message = "Debe de dejar un comentario";
 		}
 
 		if ( strlen( $comentario ) > 3 )
@@ -278,6 +283,33 @@ class Aeronave extends Query
 			// RESULT
 			$this->error   = $result->error;
 			$this->message = $result->message;
+		}
+	}
+
+	public function ingresarIncidente( $idVuelo, $incidente )
+	{
+		$idVuelo   = (int)$idVuelo;
+		$incidente = $this->conexion->real_escape_string( $incidente );
+
+		if ( !( $idVuelo > 0 ) ) {
+			$this->error   = true;
+			$this->message = "Id de vuelo no definido";
+		}
+
+		if ( !$this->error AND !( strlen( $incidente ) > 3 ) ) {
+			$this->error   = true;
+			$this->message = "Incidente demasiado corto";
+		}
+
+		if ( !$this->error ) {
+			$sql = "CALL ingresarIncidente( {$idVuelo}, '{$incidente}', '{$this->session->getUser()}' )";
+			$result = $this->query( $sql );
+			// RESULT
+			$this->error   = $result->error;
+			$this->message = $result->message;
+
+			if ( $result->data > 0 )
+				$this->data = $this->lstVueloAeronave( 0, 0, 0, $result->data );
 		}
 	}
 
@@ -451,8 +483,6 @@ class Aeronave extends Query
 			    aeronave,
 			    idTipoAeronave,
 			    tipoAeronave,
-			    idEstadoAeronave,
-			    estadoAeronave,
 			    aeropuertoOrigen,
 			    horaSalida,
 			    fechaSalida,
@@ -472,6 +502,31 @@ class Aeronave extends Query
 			    fechaEstado
 			FROM vstVueloAeronave WHERE $where 
 			ORDER BY fechaEstado DESC";
+
+			$result = $this->queryLst( $sql );
+			while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
+				$lst[] = $row;
+			}
+		}
+
+		return $lst;
+	}
+
+	public function lstIncidente( $idVuelo )
+	{
+		$lst = array();
+
+		$idVuelo = (int)$idVuelo;
+
+		if ( $idVuelo > 0 ) {
+			$sql = "SELECT 
+						idVuelo,
+					    incidente,
+					    fechaHora,
+						idUsuario,
+					    nombreCompleto
+					FROM vstIncidente WHERE idVuelo = {$idVuelo} 
+					ORDER BY fechaHora ASC";
 
 			$result = $this->queryLst( $sql );
 			while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {

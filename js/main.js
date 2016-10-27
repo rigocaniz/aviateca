@@ -5,7 +5,6 @@ miApp.controller('principal', function($scope, $http){
 	
 	$scope.getItem = function (_array, _campo, _valor) {
 		var item = {};
-		console.log( _array, _campo, _valor);
 
 		for (var i = 0; i < _array.length; i++) {
 			if( _array[ i ][ _campo ] == _valor ) {
@@ -15,6 +14,19 @@ miApp.controller('principal', function($scope, $http){
 		}
 
 		return item;
+	};
+
+	$scope.getIndex = function (_array, _campo, _valor) {
+		var index = -1;
+		
+		for (var i = 0; i < _array.length; i++) {
+			if( _array[ i ][ _campo ] == _valor ) {
+				index = i;
+				break;
+			}
+		}
+
+		return index;
 	};
 });
 
