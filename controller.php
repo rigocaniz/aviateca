@@ -22,6 +22,8 @@ require 'class/conexion.class.php';
 require 'class/query.class.php';
 require 'class/ubicacion.class.php';
 require 'class/aeronave.class.php';
+require 'class/persona.class.php';
+require 'class/reservacion.class.php';
 
 $conexion = new Conexion();
 
@@ -133,7 +135,7 @@ switch ( $data->action ) {
 	case 'ingresarVueloAeronave':
 		$aeronave = new Aeronave( $conexion, $session );
 		$aeronave->ingresarVueloAeronave( $data->idAeronave, $data->aeropuertoOrigen, $data->horaSalida, $data->fechaSalida, 
-			$data->aeropuertoDestino, $data->horaAterrizaje, $data->fechaAterrizaje );
+			$data->aeropuertoDestino, $data->horaAterrizaje, $data->fechaAterrizaje, $data->lstClasePrecio );
 
 		echo json_encode( $aeronave->getResponse() );
 		break;
@@ -164,6 +166,53 @@ switch ( $data->action ) {
 		$aeronave = new Aeronave( $conexion, $session );
 		
 		echo json_encode( $aeronave->lstIncidente( $data->idVuelo ) );
+		break;
+
+	// INICIO
+	case 'iniReservacion':
+		$reservacion = new Reservacion( $conexion, $session );
+		$aeronave    = new Aeronave( $conexion, $session );
+
+		echo json_encode( 
+			array( 
+				'today'       => date("Y-m-d"),
+				'lstTipoPago' => $reservacion->lstTipoPago(),
+				'lstClase'    => $aeronave->lstClase(),
+			)
+		);
+		break;
+
+	case 'guardarReservacion':
+		$reservacion = new Reservacion( $conexion, $session );
+		$reservacion->ingresarReservacion( $data->idVuelo, $data->idClase, $data->idPersona, 
+			$data->encargado, $data->idTipoPago );
+
+		echo json_encode( $reservacion->getResponse() );
+		break;
+
+	// PERSON
+	case 'ingresarPersona':
+		$persona = new Persona( $conexion, $session );
+		$persona->ingresarPersona( $data->numeroPasaporte, $data->identificacion, $data->nombres, 
+			$data->apellidos, $data->fechaNacimiento, $data->correo, $data->telefono, 
+			$data->urlFoto, $data->idGenero, $data->idCiudad );
+
+		echo json_encode( $persona->getResponse() );
+		break;
+
+	case 'consultarPersona':
+		$persona = new Persona( $conexion, $session );
+		$datos = array(
+			'persona'  => $persona->getPersona( 0, $data->numeroPasaporte, $data->idVuelo )
+		);
+
+		echo json_encode( $datos );
+		break;
+
+	case 'consultarDestinos':
+		$reservacion = new Reservacion( $conexion, $session );
+
+		echo json_encode( $reservacion->lstVueloPendientes( $data->like ) );
 		break;
 
 	// DEFAULT

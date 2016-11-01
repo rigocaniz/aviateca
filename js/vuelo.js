@@ -2,6 +2,7 @@ miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 	$scope.idEstadoVuelo    = '';
 	$scope.idTipoAeronave   = '';
 	$scope.idAeronave       = '';
+	$scope.lstClasePrecio   = [];
 	$scope.lstTipoAeronave  = [];
 	$scope.lstEstadoVuelo   = [];
 	$scope.lstVueloAeronave = [];
@@ -110,7 +111,8 @@ miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 			aeropuertoOrigen  : $scope.idAeropuertoOrigen,
 			horaAterrizaje 	  : horaAterrizaje,
 			aeropuertoDestino : $scope.idAeropuertoDestino,
-			fechaAterrizaje   : fechaAterrizaje
+			fechaAterrizaje   : fechaAterrizaje,
+			lstClasePrecio 	  : $scope.lstClasePrecio
 		};
 
 		$http.post('controller.php', datos)
@@ -224,6 +226,13 @@ miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 		.error(function () {
 			$("#loading").hide();
 		});
+	};
+
+	// DETALLE DE VUELO
+	$scope.openDetalle = function ( vuelo ) {
+		$scope.vuelo = angular.copy( vuelo );
+		console.log( $scope.vuelo );
+		$("#mdlDetalle").openModal();
 	};
 
 	// LOCALIZACION
@@ -371,6 +380,18 @@ miApp.controller('ctrlVuelo', function($scope, $http, $timeout){
 		$scope.idAeronave = "";
 		if ( _new ){
 			$scope.getAeronaves();
+		}
+	});
+
+	$scope.$watch('idAeronave', function (_new) {
+		$scope.lstClasePrecio = [];
+		if ( _new > 0 ) {
+			for (var i = 0; i < $scope.lstAeronave.length; i++) {
+				if ( $scope.lstAeronave[ i ].idAeronave == _new ) {
+					$scope.lstClasePrecio = angular.copy( $scope.lstAeronave[ i ].lstClase );
+					break;
+				}
+			}
 		}
 	});
 

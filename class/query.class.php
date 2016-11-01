@@ -59,5 +59,18 @@ class Query
 
 		return (object)array( 'error' => $error, 'message' => $message, 'data' => $data );
 	}
+
+	public function queryOriginal( $query )
+	{
+		$error   = false;
+		$message = "";
+
+		if ( !$this->conexion->query( $query ) ) {
+			$error   = true;
+			$message = "No se pudo ejecutar la consulta";
+		}
+
+		return (object)array( 'error' => $error, 'message' => $message, 'data' => $data );
+	}
 }
 ?>

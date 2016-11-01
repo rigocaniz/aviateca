@@ -44,7 +44,6 @@ miApp.controller('ctrlAeronave', function($scope, $http, $timeout){
 			$scope.aeronaveClases.push({
 				'idClase'   : $scope.lstClase[ i ].idClase,
 				'clase'     : $scope.lstClase[ i ].clase,
-				'precio'    : 0,
 				'capacidad' : 0,
 			});
 		}

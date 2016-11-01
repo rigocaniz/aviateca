@@ -99,7 +99,6 @@
 								<tr>
 									<th>Clase</th>
 									<th>Capacidad</th>
-									<th>Precio</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -107,9 +106,6 @@
 									<td><b>{{item.clase}}</b></td>
 									<td>
 										<input type="number" ng-model="item.capacidad">
-									</td>
-									<td>
-										<input type="number" ng-model="item.precio">
 									</td>
 								</tr>
 							</tbody>
@@ -120,7 +116,13 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="waves-effect green btn left" ng-click="guardarAeronave()">Guardar</button>
-		<button class="waves-effect btn-flat grey lighten-3 right modal-action modal-close">Salir</button>
+		<button class="waves-effect green btn left" ng-click="guardarAeronave()">
+			<i class="material-icons left">done</i>
+			Guardar
+		</button>
+		<button class="waves-effect btn-flat grey lighten-3 right modal-action modal-close">
+			<i class="material-icons left">close</i>
+			Salir
+		</button>
 	</div>
 </div>

@@ -23,7 +23,13 @@ body{
 /* CUSTOM -> PRIVADO*/
 
 button.min{
-	padding:0px 12px;
+	padding: 2px 9px;
+    margin-bottom: 5px;
+    height: 30px;
+}
+
+button.min>i{
+	line-height: 1rem;
 }
 
 .hr{
@@ -85,7 +91,8 @@ button.min{
     color: #fff;
     padding: 0px 8px;
     font-size: 13px;
-    margin-top: -2.5rem;
+    z-index: 2500;
+    margin-top: -2.6rem;
     margin-left: -2rem;
     border-radius: 3px;
     -moz-border-radius: 3px;
@@ -143,6 +150,17 @@ button.min{
 
 *{
 	outline: none;
+}
+
+.myItem{
+    margin-right: 11px;
+    padding-right: 15px;
+    border-right: 1px solid #b9ccd8;
+    color: #2675a6;
+}
+
+.myItem.danger{
+    color: #b32d2d;
 }
 
 /*

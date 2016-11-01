@@ -23,10 +23,11 @@ miApp.config(function($routeProvider) {
 		controller : 'ctrlVuelo'
 	})
 
-	.when('/pasajero',{
-		templateUrl : 'views/persona.php',
-		controller : 'ctrlPersona'
+	.when('/reservacion',{
+		templateUrl : 'views/reservacion.php',
+		controller : 'ctrlReservacion'
 	})
+
 	.otherwise({
 		redirectTo: '/'
 	});

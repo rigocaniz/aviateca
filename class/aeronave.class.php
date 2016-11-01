@@ -23,7 +23,7 @@ class Aeronave extends Query
 		}
 
 		if ( !$this->error ) {
-			$sql    = "CALL ingresarAeropuerto( {$idCiudad}, '{$aeropuerto}', '{$this->session->getUser()}' )";
+			$sql    = "CALL ingresarAeropuerto( {$idCiudad}, '{$aeropuerto}', '0', '0', '{$this->session->getUser()}' )";
 			$result = $this->query( $sql );
 			// RESULT
 			$this->error   = $result->error;
@@ -62,7 +62,7 @@ class Aeronave extends Query
 		// INGRESAR CAPACIDAD Y PRECIO POR EL TIPO DE CLASE
 		if ( !$this->error ) {
 			foreach ($aeronaveClases as $clase) {
-				$this->ingresarClaseAeronave( $idAeronave, $clase->idClase, $clase->precio, $clase->capacidad );
+				$this->ingresarClaseAeronave( $idAeronave, $clase->idClase, $clase->capacidad );
 				$capacidadTotal += $clase->capacidad;
 
 				if ( $this->error )
@@ -117,7 +117,7 @@ class Aeronave extends Query
 
 		if ( !$this->error ) {
 			foreach ($aeronaveClases as $clase) {
-				$this->actualizarClaseAeronave( $idAeronave, $clase->idClase, $clase->precio, $clase->capacidad );
+				$this->actualizarClaseAeronave( $idAeronave, $clase->idClase, $clase->capacidad );
 				$capacidadTotal += $clase->capacidad;
 
 				if ( $this->error )
@@ -137,12 +137,11 @@ class Aeronave extends Query
 			$this->conexion->query( "COMMIT" );
 	}
 
-	public function ingresarClaseAeronave( $idAeronave, $idClase, $precioBoleto, $capacidad )
+	public function ingresarClaseAeronave( $idAeronave, $idClase, $capacidad )
 	{
-		$idAeronave   = (int)$idAeronave;
-		$idClase      = (int)$idClase;
-		$precioBoleto = (double)$precioBoleto;
-		$capacidad    = (int)$capacidad;
+		$idAeronave = (int)$idAeronave;
+		$idClase    = (int)$idClase;
+		$capacidad  = (int)$capacidad;
 
 		if ( !( $idAeronave > 0 ) ) {
 			$this->error   = true;
@@ -155,7 +154,7 @@ class Aeronave extends Query
 		}
 
 		if ( !$this->error ) {
-			$sql    = "CALL ingresarClaseAeronave( {$idAeronave}, {$idClase}, {$precioBoleto}, {$capacidad}, '{$this->session->getUser()}' )";
+			$sql    = "CALL ingresarClaseAeronave( {$idAeronave}, {$idClase}, {$capacidad}, '{$this->session->getUser()}' )";
 			$result = $this->query( $sql );
 			// RESULT
 			$this->error   = $result->error;
@@ -163,12 +162,11 @@ class Aeronave extends Query
 		}
 	}
 
-	public function actualizarClaseAeronave( $idAeronave, $idClase, $precioBoleto, $capacidad )
+	public function actualizarClaseAeronave( $idAeronave, $idClase, $capacidad )
 	{
-		$idAeronave   = (int)$idAeronave;
-		$idClase      = (int)$idClase;
-		$precioBoleto = (double)$precioBoleto;
-		$capacidad    = (int)$capacidad;
+		$idAeronave = (int)$idAeronave;
+		$idClase    = (int)$idClase;
+		$capacidad  = (int)$capacidad;
 
 		if ( !( $idAeronave > 0 ) ) {
 			$this->error   = true;
@@ -181,7 +179,7 @@ class Aeronave extends Query
 		}
 
 		if ( !$this->error ) {
-			$sql    = "CALL actualizarClaseAeronave( {$idAeronave}, {$idClase}, {$precioBoleto}, {$capacidad}, '{$this->session->getUser()}' )";
+			$sql    = "CALL actualizarClaseAeronave( {$idAeronave}, {$idClase}, {$capacidad}, '{$this->session->getUser()}' )";
 			$result = $this->query( $sql );
 			// RESULT
 			$this->error   = $result->error;
@@ -189,7 +187,7 @@ class Aeronave extends Query
 		}
 	}
 
-	public function ingresarVueloAeronave( $idAeronave, $aeropuertoOrigen, $horaSalida, $fechaSalida, $aeropuertoDestino, $horaAterrizaje, $fechaAterrizaje )
+	public function ingresarVueloAeronave( $idAeronave, $aeropuertoOrigen, $horaSalida, $fechaSalida, $aeropuertoDestino, $horaAterrizaje, $fechaAterrizaje, $lstClasePrecio )
 	{
 		$idAeronave        = (int)$idAeronave;
 		$aeropuertoDestino = (int)$aeropuertoDestino;
@@ -238,6 +236,8 @@ class Aeronave extends Query
 		}
 
 		if ( !$this->error ) {
+			$this->queryOriginal( "START TRANSACTION" );
+			
 			$sql = "CALL ingresarVueloAeronave( {$idAeronave}, {$aeropuertoOrigen}, '{$horaSalida}', '{$fechaSalida}', 
 						{$aeropuertoDestino}, '{$horaAterrizaje}', '{$fechaAterrizaje}', '{$this->session->getUser()}' )";
 			$result = $this->query( $sql );
@@ -247,6 +247,59 @@ class Aeronave extends Query
 
 			if ( $result->data > 0 )
 				$this->data = $this->lstVueloAeronave( 0, 0, 0, $result->data );
+
+			// INGRESAR PRECIO DE BOLETO DEL VIAJE
+			if ( !$this->error ) {
+				$precioTotal = 0;
+
+				foreach ($lstClasePrecio as $clase) {
+					$this->precioBoleto( $result->data, $clase->idClase, $clase->precio );
+					$precioTotal += $clase->precio;
+
+					if ( $this->error )
+						break;
+				}
+
+				if ( !$this->error AND $precioTotal <= 0 ) {
+					$this->error   = true;
+					$this->message = "El precio del vuelo no esta definido";
+				}
+			}
+
+			// SI OCURRIO UN ERROR
+			if ( $this->error ) {
+				$this->data = NULL;
+				$this->queryOriginal( "ROLLBACK" );
+			}
+
+			// SI NO EXISTE NINGUN ERROR
+			else
+				$this->queryOriginal( "COMMIT" );
+		}
+	}
+
+	private function precioBoleto( $idVuelo, $idClase, $precioBoleto )
+	{
+		$idVuelo      = (int)$idVuelo;
+		$idClase      = (int)$idClase;
+		$precioBoleto = (double)$precioBoleto;
+
+		if ( !( $idVuelo > 0 ) ) {
+			$this->error   = true;
+			$this->message = "El ID del Vuelo no esta definido";
+		}
+
+		if ( !$this->error AND !( $idClase > 0 ) ) {
+			$this->error   = true;
+			$this->message = "Clase no seleccionada";
+		}
+
+		if ( !$this->error ) {
+			$sql = "CALL ingresarPrecioBoleto( {$idVuelo}, {$idClase}, {$precioBoleto} )";
+			$result = $this->query( $sql );
+			// RESULT
+			$this->error   = $result->error;
+			$this->message = $result->message;
 		}
 	}
 
@@ -421,6 +474,7 @@ class Aeronave extends Query
 		$sql    = "SELECT * FROM vstAeronave $where ";
 		$result = $this->queryLst( $sql );
 		while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
+			$row->lstClase = $this->lstAeronaveClase( $row->idAeronave );
 			$lst[] = $row;
 		}
 
@@ -437,9 +491,8 @@ class Aeronave extends Query
 			$result = $this->queryLst( $sql );
 			while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
 				$row->capacidad = (int)$row->capacidad;
-				$row->precio    = (double)$row->precioBoleto;
+				$row->precio    = 0;
 				
-				unset( $row->precioBoleto );
 				unset( $row->idAeronave );
 
 				$lst[] = $row;
@@ -484,15 +537,16 @@ class Aeronave extends Query
 			    idTipoAeronave,
 			    tipoAeronave,
 			    aeropuertoOrigen,
-			    horaSalida,
-			    fechaSalida,
+			    TIME_FORMAT(horaSalida, '%H:%i')AS 'horaSalida',
+			    DATE_FORMAT(fechaSalida, '%d/%m/%Y')AS 'fechaSalida',
 			    origen,
 			    ciudadOrigen,
 			    paisOrigen,
 			    continenteOrigen,
 				aeropuertoDestino,
-			    horaAterrizaje,
-			    fechaAterrizaje,
+				TIME_FORMAT(horaAterrizaje, '%H:%i')AS 'horaAterrizaje',
+			    DATE_FORMAT(fechaAterrizaje, '%d/%m/%Y')AS 'fechaAterrizaje',
+			    tiempoViaje,
 			    destino,
 			    ciudadDestino,
 			    paisDestino,
@@ -503,8 +557,19 @@ class Aeronave extends Query
 			FROM vstVueloAeronave WHERE $where 
 			ORDER BY fechaEstado DESC";
 
+			$disponibilidad = new Reservacion( $this->conexion, $this->session );
+
 			$result = $this->queryLst( $sql );
 			while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
+				
+				if ( $row->tiempoViaje > 60 )
+					$row->tiempoViaje = ROUND( $row->tiempoViaje / 60, 2) . " hora(s)";
+
+				else
+					$row->tiempoViaje = $row->tiempoViaje . " minutos";
+
+				$row->lstClase = $disponibilidad->getDisponibilidad( $row->idVuelo );
+
 				$lst[] = $row;
 			}
 		}

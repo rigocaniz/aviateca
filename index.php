@@ -39,6 +39,7 @@
 				<li><a href="#/aeropuerto">Aeropuerto</a></li>
 				<li><a href="#/aeronave">Aeronave</a></li>
 				<li><a href="#/vuelo">Vuelo</a></li>
+				<li><a href="#/reservacion">Reservación</a></li>
 			</ul>
 			<ul class="side-nav" id="mobile-demo">
 				<li>
@@ -48,6 +49,7 @@
 				<li><a href="#/aeropuerto">Aeropuerto</a></li>
 				<li><a href="#/aeronave">Aeronave</a></li>
 				<li><a href="#/vuelo">Vuelo</a></li>
+				<li><a href="#/reservacion">Reservación</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -61,6 +63,9 @@
 <script src="js/libs/angular-route.min.js"></script>
 <script src="js/libs/jquery-1.12.1.min.js"></script>
 <script src="js/libs/materialize.min.js"></script>
+<script src="js/libs/jquery.html5uploader.js"></script>
+<script src="js/libs/moment.min.js"></script>
+
 <script src="js/main.js"></script>
 <script src="js/_route.js"></script>
 
@@ -68,5 +73,6 @@
 <script src="js/aeropuerto.js"></script>
 <script src="js/aeronave.js"></script>
 <script src="js/vuelo.js"></script>
+<script src="js/reservacion.js"></script>
 </body>
 </html>

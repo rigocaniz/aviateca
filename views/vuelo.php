@@ -1,6 +1,7 @@
 <div class="col m12">
 	<div class="row">
 		<blockquote class="row s12 m12">
+		<!-- TITULO -->
 			<div class="col m6 s12">
 		 		<h5>
 		 			<i class="material-icons">local_airport</i> Vuelos
@@ -24,9 +25,11 @@
 		 			</span>
 		 		</h5>
 			</div>
+
+			<!-- MENU ESTADOS -->
 			<div class="col m6 s12" style="height: 65px">
 				<div style="position: relative;right: 70px" class="right">
-					<div class="fixed-action-btn horizontal click-to-toggle" style="position: absolute;right: auto;bottom: auto;">
+					<div class="fixed-action-btn horizontal" style="position: absolute;right: auto;bottom: auto;">
 						<a class="btn-floating btn-large">
 							<i class="material-icons">menu</i>
 						</a>
@@ -91,7 +94,11 @@
 						<td>{{item.ciudadDestino}}, {{item.paisDestino}}</td>
 						<td>{{item.horaAterrizaje}}</td>
 						<td>{{item.tipoAeronave}}</td>
-						<td style="min-width: 150px">
+						<td style="min-width: 50px">
+							<button type="button" class="btn min cyan lighten-1 tooltip" data-title="Detalle" 
+								ng-click="openDetalle( item )">
+								<i class="material-icons">info</i>
+							</button>
 							<button type="button" class="btn min grey darken-2 tooltip" data-title="Incidente" 
 								ng-click="openIncidente( item )" ng-show="item.idEstadoVuelo!=5">
 								<i class="material-icons">announcement</i>
@@ -142,6 +149,16 @@
 					</div>
 					<div class="col m2">
 						<i class="material-icons left" ng-show="lstAeronave.length===0">airplanemode_inactive</i>
+					</div>
+				</div>
+
+				<!-- PRECIO BOLETO -->
+				<div class="row">
+					<div class="col m6 s12" ng-repeat="item in lstClasePrecio">
+						<b class="col s5">$ Clase {{item.clase}}</b>
+						<div class="col s7">
+							<input type="number" ng-model="item.precio" min="0">
+						</div>
 					</div>
 				</div>
 
@@ -372,7 +389,99 @@
 	</div>
 </div>
 
+<!-- Modal DETALLE VUELO -->
+<div id="mdlDetalle" class="modal bottom-sheet">
+	<div class="modal-content">
+		<div class="row" style="margin: -15px 0px -7px 0px;">
+			<div class="col m4 s12">
+				<h5>ID Vuelo: <b>{{vuelo.idVuelo}}</b></h5>
+			</div>
+			<div class="col m8 s12 right-align">
+				<h5>Aeronave: <b>{{vuelo.aeronave}} ({{vuelo.tipoAeronave}})</b></h5>
+			</div>
+		</div>
+		<div class="hr"></div>
+		<div class="row">
+			<div class="col s12">Estado: <b>{{vuelo.estadoVuelo}}</b></div>
+			<div class="col m6 s12">Tiempo de Viaje Aproximado: <b>{{vuelo.tiempoViaje}}</b></div>
+			<div class="col m6 s12 right-align">
+				<a ng-href="../reporte.php?type=asignacion&idVuelo={{vuelo.idVuelo}}" class="waves-effect btn blue darken-1" target="_blank">
+					<i class="material-icons left">format_list_numbered</i>
+					Asignación Pasajeros
+				</a>
+			</div>
+		</div>
+		
+		<!-- DATOS DE ORIGEN -->
+		<div class="row" style="margin-top: 15px">
+			<div class="legend">
+				<div class="titulo">
+					<i class="material-icons left">flight_takeoff</i>
+					Lugar Origen
+				</div>
+			</div>
+			<div class="col m3 s12">Salida: <b>{{vuelo.fechaSalida}} - {{vuelo.horaSalida}}</b></div>
+			<div class="col m9 s12">Aeropuerto: <b>{{vuelo.origen}} - {{vuelo.ciudadOrigen}}, {{vuelo.paisOrigen}}, {{vuelo.continenteOrigen}}</b></div>
+		</div>
 
+		<!-- DATOS DE DESTINO -->
+		<div class="row" style="margin-top: 15px">
+			<div class="legend">
+				<div class="titulo">
+					<i class="material-icons left">flight_land</i>
+					Lugar Destino
+				</div>
+			</div>
+			<div class="col m3 s12">Aterrizaje: <b>{{vuelo.fechaAterrizaje}} - {{vuelo.horaAterrizaje}}</b></div>
+			<div class="col m9 s12">Aeropuerto: <b>{{vuelo.destino}} - {{vuelo.ciudadDestino}}, {{vuelo.paisDestino}}, {{vuelo.continenteDestino}}</b></div>
+		</div>
+
+		<!-- DISPONIBILIDAD -->
+		<div class="row" style="margin-top: 15px">
+			<div class="legend">
+				<div class="titulo">
+					<i class="material-icons left">people</i>
+					Disponibilidad
+				</div>
+			</div>
+			<div class="col s12">
+				<table class="responsive-table">
+					<thead>
+						<tr>
+							<th>Clase</th>
+							<th>Capacidad</th>
+							<th># Pasajeros</th>
+							<th>Acientos Disponibles</th>
+							<th>Precio</th>
+							<th>Disponibilidad</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in vuelo.lstClase.lstClase">
+							<td>{{item.clase}}</td>
+							<td>{{item.capacidad}}</td>
+							<td>{{item.numeroPasajeros}}</td>
+							<td>{{item.capacidad-item.numeroPasajeros}}</td>
+							<td>$ {{item.precioBoleto}}</td>
+							<td>
+								<span style="right:auto" class="new badge green" data-badge-caption="SI" 
+									ng-show="item.disponibilidad"></span>
+								<span style="right:auto" class="new badge red" data-badge-caption="NO" 
+									ng-show="!item.disponibilidad"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="waves-effect btn-flat grey lighten-3 right modal-action modal-close">
+			<i class="material-icons left">close</i>
+			Salir
+		</button>
+	</div>
+</div>
 
 
 
