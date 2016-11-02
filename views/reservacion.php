@@ -409,6 +409,55 @@
 	</div>
 </div>
 
+<!-- Modal CONFIRMACION DE RESERVACION -->
+<div id="mdlReservacionConf" class="modal bottom-sheet">
+	<div class="modal-content">
+		<h4>
+			<i class="material-icons">people</i>
+			Reservación
+		</h4>
+		<div class="hr"></div>
+
+		<form class="col s12">
+			<div class="row">
+				<div class="col s12">
+					<img class="responsive-img" ng-src="fotos/{{reservacion.urlFoto}}" style="height: 120px">
+				</div>
+				<!-- DATOS DE RESERVACION -->
+				<div class="col s12">
+					<div class="col m4 s12">
+						<b># Reservación: </b>{{reservacion.idReservacion}}
+					</div>
+					<div class="col m4 s12">
+						<b># Asiento: </b>{{reservacion.numeroAsiento}}
+					</div>
+					<div class="col m4 s12">
+						<b># Pasaporte: </b>{{reservacion.numeroPasaporte}}
+					</div>
+				</div>
+				<div class="col s12">
+					<div class="col m6 s12">
+						<b>Nombre: </b>{{reservacion.nombreCompleto}}
+					</div>
+					<div class="col m6 s12">
+						<b>Estado: </b>{{reservacion.estadoReservacion}}
+					</div>
+				</div>
+				<div class="col s12">
+					<div class="col m6 s12">
+						<b>Encargado: </b>{{reservacion.nombreEncargado}}
+					</div>
+				</div>
+			</div>
+		</form>			
+	</div>
+	<div class="modal-footer">
+		<button class="waves-effect btn-flat grey lighten-3 right modal-action modal-close">
+			<i class="material-icons left">close</i>
+			Salir
+		</button>
+	</div>
+</div>
 
 
 

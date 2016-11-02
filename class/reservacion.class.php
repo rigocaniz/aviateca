@@ -47,8 +47,11 @@ class Reservacion extends Query
 			$this->error   = $result->error;
 			$this->message = $result->message;
 
-			if ( $result->data > 0 )
-				$this->data = $result->data;
+			if ( $result->data > 0 ) {
+				$info = $this->lstAsignacionPasajeros( 0, 0, $result->data )->lst;
+				if ( count( $info ) )
+					$this->data = $info[ 0 ];
+			}
 		}
 	}
 
@@ -156,13 +159,64 @@ class Reservacion extends Query
 		return (object)$datos;
 	}
 
+	public function lstAsignacionPasajeros( $idVuelo = 0, $idEstadoReservacion = 0, $idReservacion = 0, $limit = 0 )
+	{
+		$lst = array();
+		$info = array();
+
+		$idVuelo             = (int)$idVuelo;
+		$idEstadoReservacion = (int)$idEstadoReservacion;
+		$idReservacion       = (int)$idReservacion;
+		$where               = "";
+		$limitResult         = "";
+
+		if ( $idVuelo > 0 )
+			$where .= " AND idVuelo = {$idVuelo} ";
+
+		if ( $idEstadoReservacion > 0 )
+			$where .= " AND idEstadoReservacion = {$idEstadoReservacion} ";
+
+		if ( $idReservacion > 0 )
+			$where .= " AND idReservacion = {$idReservacion} ";
+
+		if ( $limit > 0 )
+			$limitResult = " LIMIT $limit ";
+
+		if ( strlen( $where ) ) {
+			$where = substr($where, 4);
+			$sql = "SELECT 
+						idReservacion,
+					    idVuelo,
+					    clase,
+					    numeroAsiento,
+					    numeroPasaporte,
+					    urlFoto,
+					    idGenero,
+					    nombreCompleto,
+					    edad,
+					    nombreEncargado,
+					    idEstadoReservacion,
+					    estadoReservacion,
+					    tipoPago,
+					    precioBoleto,
+					    montoRecargo,
+					    montoAsesoria,
+					    idUsuario
+					FROM vstReservacion WHERE $where
+					$limitResult";
+
+			$result = $this->queryLst( $sql );
+			while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
+				$lst[] = $row;
+			}
+		}
+
+		return (object)array( 'lst' => $lst, 'info' => $info, );
+	}
+
 	public function getResponse()
 	{
 		return (object)array( "response" => !$this->error, "message" => $this->message, "data" => $this->data );
 	}
 }
 ?>
-
-
-
-

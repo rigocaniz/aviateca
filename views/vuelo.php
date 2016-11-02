@@ -394,7 +394,7 @@
 	<div class="modal-content">
 		<div class="row" style="margin: -15px 0px -7px 0px;">
 			<div class="col m4 s12">
-				<h5>ID Vuelo: <b>{{vuelo.idVuelo}}</b></h5>
+				<h5># Vuelo: <b>{{vuelo.idVuelo}}</b></h5>
 			</div>
 			<div class="col m8 s12 right-align">
 				<h5>Aeronave: <b>{{vuelo.aeronave}} ({{vuelo.tipoAeronave}})</b></h5>
@@ -405,7 +405,7 @@
 			<div class="col s12">Estado: <b>{{vuelo.estadoVuelo}}</b></div>
 			<div class="col m6 s12">Tiempo de Viaje Aproximado: <b>{{vuelo.tiempoViaje}}</b></div>
 			<div class="col m6 s12 right-align">
-				<a ng-href="../reporte.php?type=asignacion&idVuelo={{vuelo.idVuelo}}" class="waves-effect btn blue darken-1" target="_blank">
+				<a ng-href="reporte.php?type=asignacion&idVuelo={{vuelo.idVuelo}}" class="waves-effect btn blue darken-1" target="_blank">
 					<i class="material-icons left">format_list_numbered</i>
 					Asignación Pasajeros
 				</a>

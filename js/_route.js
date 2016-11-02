@@ -28,6 +28,11 @@ miApp.config(function($routeProvider) {
 		controller : 'ctrlReservacion'
 	})
 
+	.when('/usuario',{
+		templateUrl : 'views/usuario.php',
+		controller : 'ctrlUsuario'
+	})
+
 	.otherwise({
 		redirectTo: '/'
 	});

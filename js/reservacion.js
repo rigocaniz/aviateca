@@ -182,10 +182,11 @@ miApp.controller('ctrlReservacion', function($scope, $http, $timeout){
 
 			if ( data.response ) {
 				if ( data.data )
-					$scope.persona = data.data;
+					$scope.reservacion = data.data;
 
 				Materialize.toast(data.message, 5000);
 				$("#mdlReservacion").closeModal();
+				$("#mdlReservacionConf").openModal();
 			}else{
 				Materialize.toast(data.message, 7000);
 			}

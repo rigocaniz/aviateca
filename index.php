@@ -1,3 +1,14 @@
+<?php 
+@session_start();
+require 'class/session.class.php';
+
+$session = new Session();
+
+// SI LA SESION NO ES VALIDA
+if ( !$session->valid() )
+	header("location: login.php");
+
+?>
 <!DOCTYPE html>
 <html lang="es-GT" ng-app="app">
 <head>
@@ -8,6 +19,7 @@
 	<title>Aviateca</title>
 </head>
 <body ng-controller="principal">
+<!-- LOADING -->
 <div class="loading" id="loading">
 	<div class="foot">
 		<h4>Espere un momento...</h4>
@@ -31,7 +43,8 @@
 	<nav>
 		<div class="nav-wrapper">
 			<a href="#!" class="brand-logo right">
-				<img src="images/aviateca.png" height="39" style="vertical-align: middle;">
+				<img src="images/aviateca.png" height="29">
+				<span class="currentUser"><?= $session->getName(); ?></span>
 			</a>
 			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 			<ul class="left hide-on-med-and-down">
@@ -40,6 +53,8 @@
 				<li><a href="#/aeronave">Aeronave</a></li>
 				<li><a href="#/vuelo">Vuelo</a></li>
 				<li><a href="#/reservacion">Reservación</a></li>
+				<li><a href="#/usuario">Usuarios</a></li>
+				<li><a href="logout.php">Salir</a></li>
 			</ul>
 			<ul class="side-nav" id="mobile-demo">
 				<li>
@@ -50,6 +65,8 @@
 				<li><a href="#/aeronave">Aeronave</a></li>
 				<li><a href="#/vuelo">Vuelo</a></li>
 				<li><a href="#/reservacion">Reservación</a></li>
+				<li><a href="#/usuario">Usuarios</a></li>
+				<li><a href="#logout.php">Salir</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -74,5 +91,6 @@
 <script src="js/aeronave.js"></script>
 <script src="js/vuelo.js"></script>
 <script src="js/reservacion.js"></script>
+<script src="js/usuario.js"></script>
 </body>
 </html>

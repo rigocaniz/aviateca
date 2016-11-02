@@ -93,23 +93,13 @@
 				</div>
 				<div class="hr"></div>
 				<div class="row">
-					<div class="col s12">
-						<table>
-							<thead>
-								<tr>
-									<th>Clase</th>
-									<th>Capacidad</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat="item in aeronaveClases">
-									<td><b>{{item.clase}}</b></td>
-									<td>
-										<input type="number" ng-model="item.capacidad">
-									</td>
-								</tr>
-							</tbody>
-						</table>
+					<div class="col m6 s12" ng-repeat="item in aeronaveClases">
+						<div class="input-field col s4">
+							<b>{{item.clase}}</b>
+						</div>
+						<div class="input-field col s8">
+							<input type="number" ng-model="item.capacidad">
+						</div>
 					</div>
 				</div>
 			</form>			

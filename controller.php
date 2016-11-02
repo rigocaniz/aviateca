@@ -24,10 +24,40 @@ require 'class/ubicacion.class.php';
 require 'class/aeronave.class.php';
 require 'class/persona.class.php';
 require 'class/reservacion.class.php';
+require 'class/usuario.class.php';
 
 $conexion = new Conexion();
 
 switch ( $data->action ) {
+	# USUARIO
+	case 'iniUsuario':
+		$usuario = new Usuario( $conexion, $session );
+
+		echo json_encode( $usuario->lstTipoUsuario() );
+		break;
+
+	case 'usuarioNuevo':
+		$usuario = new Usuario( $conexion, $session );
+		$usuario->usuarioNuevo( $data->idUsuario, $data->nombre, $data->idTipoUsuario, $data->cui, 
+				$data->correo, $data->porcentajeComision );
+
+		echo json_encode( $usuario->getResponse() );
+		break;
+
+	case 'resetearUsuario':
+		$usuario = new Usuario( $conexion, $session );
+		$usuario->resetearUsuario( $data->idUsuario );
+
+		echo json_encode( $usuario->getResponse() );
+		break;
+
+	case 'lstUsuario':
+		$usuario = new Usuario( $conexion, $session );
+
+		echo json_encode( $usuario->lstUsuario() );
+		break;
+
+
 	# UBICACION
 	case 'ingresarContinente':
 		$ubicacion = new ubicacion( $conexion );
