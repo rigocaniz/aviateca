@@ -181,7 +181,7 @@ switch ( $data->action ) {
 		$aeronave = new Aeronave( $conexion, $session );
 		
 		echo json_encode( $aeronave->lstVueloAeronave( $data->idEstadoVuelo, $data->aeropuertoOrigen, $data->idAeronave, 
-							$data->idVuelo, $data->idTipoAeronave ) );
+							$data->idVuelo, $data->idTipoAeronave, $data->deFecha, $data->paraFecha, $data->detallePasajeros ) );
 		break;
 
 	// INCIDENTES

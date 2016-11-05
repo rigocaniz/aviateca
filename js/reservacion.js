@@ -3,6 +3,7 @@ miApp.controller('ctrlReservacion', function($scope, $http, $timeout){
 	$scope.lstContinente = [];
 	$scope.lstPais       = [];
 	$scope.lstCiudad     = [];
+	$scope.lstVuelos 	 = [];
 	$scope.idContinente  = "";
 	$scope.codigoPais    = '';
 	$scope.idCiudad      = '';
@@ -22,13 +23,25 @@ miApp.controller('ctrlReservacion', function($scope, $http, $timeout){
 	$scope.destino         = {};
 
 	// INI => RESERVACION
+	($scope.getVuelos = function () {
+		$http.post('controller.php', {
+			action : 'lstVueloAeronave',
+			deFecha : '2016-11-01',
+			paraFecha : '2016-11-23',
+			detallePasajeros : true
+		})
+		.success(function ( data ) {
+			console.log( 'lstVuelo', data );
+			$scope.lstVuelos = data;
+		});
+	})();
+
+	// INI => RESERVACION
 	($scope.iniReservacion = function () {
 		$http.post('controller.php', {
 			action : 'iniReservacion'
 		})
 		.success(function ( data ) {
-			console.log( 'ddd', data );
-
 			$scope.today       = data.today;
 			$scope.lstTipoPago = data.lstTipoPago;
 			$timeout(function () {
@@ -301,7 +314,6 @@ miApp.controller('ctrlReservacion', function($scope, $http, $timeout){
 	});
 
 	$scope.$watch('responsable.idPersona', function (_new) {
-		console.log( "cambio responsable" );
 		$scope.calcularTotal();
 	});
 

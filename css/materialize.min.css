@@ -177,32 +177,15 @@ button.min>i{
     -webkit-border-radius: 14px;
 }
 
-/*
-.bottom-sheet .close{
-    position: fixed;
-    font-family: 'Material Icons';
-    font-size: 25px;
-    background: rgba(41, 13, 13, 0.85);
-    border: solid 2px #4e1920;
-    color: #fff;
-    box-shadow: -1px 3px 8px rgba(0, 0, 0, 0.3);
-    padding: 3px 9px;
-    border-radius: 24px;
-    margin-top: -20px;
-    right: 20px;
-    top: auto;
-    z-index: 1900;
-    cursor: pointer;
-}*/
-
-
-
-
-
-
-
-
-
+.itemVuelo{
+    border: solid 1px #e8e8e8;
+    box-shadow: 0px 2px 4px #e2e2e2;
+    -moz-box-shadow: 0px 2px 4px #e2e2e2;
+    -webkit-box-shadow: 0px 2px 4px #e2e2e2;
+    margin-top: 12px;
+    padding: 5px;
+    margin-bottom: 15px;
+}
 
 
 

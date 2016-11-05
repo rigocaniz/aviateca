@@ -48,19 +48,21 @@ if ( !$session->valid() )
 			</a>
 			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 			<ul class="left hide-on-med-and-down">
-				<li><a href="#/localizacion">Localización</a></li>
+				<li><a href="#/localizacion">Ubicaciones</a></li>
 				<li><a href="#/aeropuerto">Aeropuerto</a></li>
 				<li><a href="#/aeronave">Aeronave</a></li>
 				<li><a href="#/vuelo">Vuelo</a></li>
 				<li><a href="#/reservacion">Reservación</a></li>
 				<li><a href="#/usuario">Usuarios</a></li>
-				<li><a href="logout.php">Salir</a></li>
+				<li>
+					<a href="logout.php"><i class="material-icons">exit_to_app</i></a>
+				</li>
 			</ul>
 			<ul class="side-nav" id="mobile-demo">
 				<li>
 					<a href="#/"><i class="material-icons left">home</i>Inicio</a>
 				</li>
-				<li><a href="#/localizacion">Localización</a></li>
+				<li><a href="#/localizacion">Ubicaciones</a></li>
 				<li><a href="#/aeropuerto">Aeropuerto</a></li>
 				<li><a href="#/aeronave">Aeronave</a></li>
 				<li><a href="#/vuelo">Vuelo</a></li>

@@ -35,7 +35,7 @@ class Usuario extends Query
 		}
 		else if ( !( strlen( $idUsuario ) > 3 ) ) {
 			$this->error   = true;
-			$this->message = "Usuario muy corto";
+			$this->message = "Usuario muy corto o no válido";
 		}
 		else if ( !( strlen( $nombreCompleto ) > 3 ) ) {
 			$this->error   = true;

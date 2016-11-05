@@ -4,16 +4,17 @@
 */
 class Aeronave extends Query
 {
-	private $error    = false;
-	private $session  = NULL;
-	private $data  	  = NULL;
-	private $message  = "";
+	private $error          = false;
+	private $session        = NULL;
+	private $data           = NULL;
+	private $message        = "";
 	function __construct( &$conexion, &$session )
 	{
 		parent::__construct( $conexion );
-		$this->session = $session;
+		$this->session        = $session;
 	}
 
+	// AGREGAR AEROPUERTO
 	public function ingresarAeropuerto( $idCiudad, $aeropuerto )
 	{
 		$aeropuerto = $this->conexion->real_escape_string( $aeropuerto );
@@ -31,6 +32,7 @@ class Aeronave extends Query
 		}
 	}
 
+	// INGRESAR AERONAVE
 	public function ingresarAeronave( $aeronave, $idTipoAeronave, $aeronaveClases )
 	{
 		$aeronave       = $this->conexion->real_escape_string( $aeronave );
@@ -82,6 +84,7 @@ class Aeronave extends Query
 			$this->conexion->query( "COMMIT" );
 	}
 
+	// ACTUALIZAR AERONAVE
 	public function actualizarAeronave( $idAeronave, $aeronave, $idTipoAeronave, $idEstadoAeronave, $aeronaveClases )
 	{
 		$capacidadTotal = 0;
@@ -137,6 +140,7 @@ class Aeronave extends Query
 			$this->conexion->query( "COMMIT" );
 	}
 
+	// INGRESAR CLASE DE AERONAVE
 	public function ingresarClaseAeronave( $idAeronave, $idClase, $capacidad )
 	{
 		$idAeronave = (int)$idAeronave;
@@ -162,6 +166,7 @@ class Aeronave extends Query
 		}
 	}
 
+	// ACTUALIZAR CLASE AERONAVE
 	public function actualizarClaseAeronave( $idAeronave, $idClase, $capacidad )
 	{
 		$idAeronave = (int)$idAeronave;
@@ -187,6 +192,7 @@ class Aeronave extends Query
 		}
 	}
 
+	// INGRES DE NUEVO VUELO
 	public function ingresarVueloAeronave( $idAeronave, $aeropuertoOrigen, $horaSalida, $fechaSalida, $aeropuertoDestino, $horaAterrizaje, $fechaAterrizaje, $lstClasePrecio )
 	{
 		$idAeronave        = (int)$idAeronave;
@@ -278,6 +284,7 @@ class Aeronave extends Query
 		}
 	}
 
+	// INGRESO DE PRECIO DE BOLETO
 	private function precioBoleto( $idVuelo, $idClase, $precioBoleto )
 	{
 		$idVuelo      = (int)$idVuelo;
@@ -303,6 +310,7 @@ class Aeronave extends Query
 		}
 	}
 
+	// ACTUALIZAR ESTADO DE VUELO
 	public function actualizarEstadoVuelo( $idVuelo, $comentario, $idEstadoVuelo )
 	{
 		$idVuelo       = (int)$idVuelo;
@@ -339,6 +347,7 @@ class Aeronave extends Query
 		}
 	}
 
+	// INGRESO DE INCIDENTES OCURRIDOS
 	public function ingresarIncidente( $idVuelo, $incidente )
 	{
 		$idVuelo   = (int)$idVuelo;
@@ -502,7 +511,9 @@ class Aeronave extends Query
 		return $lst;
 	}
 
-	public function lstVueloAeronave( $idEstadoVuelo = 0, $aeropuertoOrigen = 0, $idAeronave = 0, $idVuelo = 0, $idTipoAeronave = 0 )
+		/**/
+	public function lstVueloAeronave( $idEstadoVuelo = 0, $aeropuertoOrigen = 0, $idAeronave = 0, $idVuelo = 0, 
+		$idTipoAeronave = 0, $deFecha = NULL, $paraFecha = NULL, $detallePasajeros = false )
 	{
 		$lst   = array();
 		$where = "";
@@ -527,6 +538,17 @@ class Aeronave extends Query
 
 		if ( $idTipoAeronave > 0 )
 			$where .= " AND idTipoAeronave = $idTipoAeronave ";
+
+		if ( !IS_NULL( $deFecha ) AND strlen( $deFecha ) == 10 AND !IS_NULL( $paraFecha ) AND strlen( $paraFecha ) == 10 )
+			$where .= " AND fechaSalida >= '{$deFecha}' AND fechaSalida <= '{$paraFecha}' ";
+
+		// SI ES POR DETALLE DE PASAJEROS => incluir dependencia
+		if ( $detallePasajeros ) {
+			if ( !class_exists('Reservacion') )
+				include 'reservacion.class.php';
+
+			$reservacion = new Reservacion( $this->conexion, $this->session );
+		}
 
 		if ( strlen( $where ) > 3 ) {
 			$where = substr($where, 5);
@@ -568,7 +590,13 @@ class Aeronave extends Query
 				else
 					$row->tiempoViaje = $row->tiempoViaje . " minutos";
 
-				$row->lstClase = $disponibilidad->getDisponibilidad( $row->idVuelo );
+				// DETALLE DE PASAJEROS
+				if ( $detallePasajeros )
+					$row->lstPasajero = $reservacion->lstAsignacionPasajeros( $row->idVuelo )->lst;
+
+				// CLASES DISPONIBILIDAD POR VUELO
+				else
+					$row->lstClase = $disponibilidad->getDisponibilidad( $row->idVuelo );
 
 				$lst[] = $row;
 			}
@@ -576,6 +604,7 @@ class Aeronave extends Query
 
 		return $lst;
 	}
+		/**/
 
 	public function lstIncidente( $idVuelo )
 	{

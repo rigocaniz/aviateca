@@ -15,57 +15,87 @@
 				<i class="material-icons right">people</i>
 			</a>
 		</div>
+	</div>
+</div>
+
+<div class="col m12">
+	<div class="row itemVuelo" ng-repeat="itemVuelo in lstVuelos">
+		<!-- vuelo -->
+		<div class="col s12">
+			<div class="col m4 s12">
+				<b># Vuelo: </b>{{itemVuelo.idVuelo}}
+			</div>
+			<div class="col m4 s12">
+				<b>Aeronave: </b>{{itemVuelo.aeronave}} ({{itemVuelo.tipoAeronave}})
+			</div>
+			<div class="col m4 s12">
+				<b>Estado Vuelo: </b>{{itemVuelo.estadoVuelo}}
+			</div>
+		</div>
+		<div class="col s12">
+			<div class="col m6 s12">
+				<b>Tiempo Vuelo Aproximado: </b>{{itemVuelo.tiempoViaje}}
+			</div>
+		</div>
+		<div class="col s12">
+			<div class="col m8 s12">
+				<b>Origen: </b> <u>{{itemVuelo.origen}}</u>, {{itemVuelo.ciudadOrigen}}, {{itemVuelo.paisOrigen}}, {{itemVuelo.continenteOrigen}}
+			</div>
+			<div class="col m4 s12">
+				<b>Salida: </b> {{itemVuelo.fechaSalida}} - {{itemVuelo.horaSalida}}
+			</div>
+		</div>
+		<div class="col s12">
+			<div class="col m8 s12">
+				<b>Destino: </b> <u>{{itemVuelo.destino}}</u>, {{itemVuelo.ciudadDestino}}, {{itemVuelo.paisDestino}}, {{itemVuelo.continenteDestino}}
+			</div>
+			<div class="col m4 s12">
+				<b>Aterrizaje: </b> {{itemVuelo.fechaAterrizaje}} - {{itemVuelo.horaAterrizaje}}
+			</div>
+		</div>
+		<div class="col s12">
+			<button class="waves-effect waves-light btn" ng-click="itemVuelo.show=!itemVuelo.show">
+				<i class="material-icons left">all_inclusive</i>
+				Ver Pasajeros
+			</button>
+		</div>
 
 		<!-- AERONAVES -->
-		<div class="col s12" style="margin-top: 30px">
+		<div class="col s12" style="margin-top: 20px" ng-show="itemVuelo.show">
 			<table class="responsive-table">
 				<thead>
 					<tr>
-						<th>Aeropuerto Origen</th>
-						<th>Ciudad Origen</th>
-						<th>Fecha Salida</th>
-						<th>Hora Salida</th>
-						<th>Aeropuerto Destino</th>
-						<th>Ciudad Destino</th>
-						<th>Hora Aterrizaje</th>
-						<th>Tipo Aeronave</th>
-						<th>Acciones</th>
+						<th>Foto</th>
+						<th># Asiento</th>
+						<th># Pasaporte</th>
+						<th>Clase</th>
+						<th>Pasajero</th>
+						<th>Edad</th>
+						<th>Forma Pago</th>
+						<th>Estado Reserv.</th>
+						<th>Precio Boleto</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="item in lstVueloAeronave">
-						<td>{{item.origen}}</td>
-						<td>{{item.ciudadOrigen}}, {{item.paisOrigen}}</td>
-						<td>{{item.fechaSalida}}</td>
-						<td>{{item.horaSalida}}</td>
-						<td>{{item.destino}}</td>
-						<td>{{item.ciudadDestino}}, {{item.paisDestino}}</td>
-						<td>{{item.horaAterrizaje}}</td>
-						<td>{{item.tipoAeronave}}</td>
-						<td style="min-width: 150px">
-							<button type="button" class="btn min grey darken-2 tooltip" data-title="Incidente" 
-								ng-click="openIncidente( item )" ng-show="item.idEstadoVuelo!=5">
-								<i class="material-icons">announcement</i>
-							</button>
-							<button type="button" class="btn min green lighten-1 tooltip" data-title="Viajar" 
-								ng-click="openCambiarEstadoVuelo( 2, item.idVuelo, $index )" ng-show="item.idEstadoVuelo==1">
-								<i class="material-icons">flight_takeoff</i>
-							</button>
-							<button type="button" class="btn min deep-purple darken-1 tooltip" data-title="Aterrizar" 
-								ng-click="openCambiarEstadoVuelo( 3, item.idVuelo, $index )" ng-show="item.idEstadoVuelo==2">
-								<i class="material-icons">flight_land</i>
-							</button>
-							<button type="button" class="btn min red lighten-1 tooltip" data-title="Cancelar" 
-								ng-click="openCambiarEstadoVuelo( 5, item.idVuelo, $index )" ng-show="item.idEstadoVuelo==1">
-								<i class="material-icons">close</i>
-							</button>
+					<tr ng-repeat="item in itemVuelo.lstPasajero">
+						<td>
+							<img ng-src="fotos/{{item.urlFoto}}" height="30">
 						</td>
+						<td>{{item.numeroAsiento}}</td>
+						<td>{{item.numeroPasaporte}}</td>
+						<td>{{item.clase}}</td>
+						<td>{{item.nombreCompleto}}</td>
+						<td>{{item.edad}}</td>
+						<td>{{item.tipoPago}}</td>
+						<td>{{item.estadoReservacion}}</td>
+						<td>{{item.precioBoleto}}</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 </div>
+
 
 
 <!-- Modal AGREGAR PERSONA -->

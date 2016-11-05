@@ -161,6 +161,8 @@ class Reservacion extends Query
 
 	public function lstAsignacionPasajeros( $idVuelo = 0, $idEstadoReservacion = 0, $idReservacion = 0, $limit = 0 )
 	{
+		global $session;
+
 		$lst = array();
 		$info = array();
 
@@ -181,6 +183,9 @@ class Reservacion extends Query
 
 		if ( $limit > 0 )
 			$limitResult = " LIMIT $limit ";
+
+		if ( $session->getProfile() == 1 )
+			$where .= " AND idUsuario = '{$session->getUser()}' ";
 
 		if ( strlen( $where ) ) {
 			$where = substr($where, 4);
