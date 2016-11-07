@@ -1,6 +1,4 @@
-# aviateca
-
-»»»» AVIATECA ««««
+# »»»» AVIATECA ««««
 
 Sistema de Reservaciones de Vuelos
 
