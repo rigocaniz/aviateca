@@ -115,7 +115,7 @@ if ( isset( $_POST['submit'] ) ) {
 				<div class="row">
 					<div class="input-field col s12">
 						<i class="material-icons prefix">vpn_key</i>
-						<input type="password" id="clave" name="clave" class="validate" placeholder="">
+						<input type="password" id="clave" name="clave" class="validate" placeholder="" autocomplete="off">
 						<label for="clave">Contraseña</label>
 					</div>
 				</div>
@@ -123,7 +123,7 @@ if ( isset( $_POST['submit'] ) ) {
 				<div class="row">
 					<div class="input-field col s12">
 						<i class="material-icons prefix">vpn_key</i>
-						<input type="password" id="claveNueva" name="claveNueva" class="validate" placeholder="">
+						<input type="password" id="claveNueva" name="claveNueva" class="validate" placeholder="" autocomplete="off">
 						<label for="clave">Contraseña Nueva</label>
 					</div>
 				</div>

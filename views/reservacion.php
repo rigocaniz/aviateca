@@ -10,10 +10,36 @@
 
 		<!-- AGREGAR VUELO -->
 		<div class="col s12 center-align">
-			<a class="waves-effect waves-light btn" ng-click="openReservacion()">
+			<a class="waves-effect blue lighten-1 btn" ng-click="openReservacion()">
 				<i class="material-icons left">add</i> Reservacion
 				<i class="material-icons right">people</i>
 			</a>
+			<a class="waves-effect cyan darken-1 btn" ng-click="openConsultas()">
+				<i class="material-icons left">pageview</i> Consultas
+			</a>
+		</div>
+	</div>
+	<div class="hr"></div>
+	<div class="row">
+		<h5><b>Reservaciones por Fecha</b></h5>
+		<div class="col s12">
+			<div class="col m4 s12">
+				<b class="col m4 s12">De Fecha</b>
+				<div class="col m8 s12">
+					<input type="text" class="datepicker" id="vuelosDeFecha" name="vuelosDeFecha" value="<?= date('Y-m-01');?>">
+				</div>
+			</div>
+			<div class="col m4 s12">
+				<b class="col m4 s12">Para Fecha</b>
+				<div class="col m8 s12">
+					<input type="text" class="datepicker" id="vuelosParaFecha" name="vuelosParaFecha" value="<?= date('Y-m-d');?>">
+				</div>
+			</div>
+			<div class="col m4 s12">
+				<button type="button" class="waves-effect btn" ng-click="getVuelos()">
+					<i class="material-icons left">airplanemode_active</i> Consultar
+				</button>
+			</div>
 		</div>
 	</div>
 </div>
@@ -21,23 +47,21 @@
 <div class="col m12">
 	<div class="row itemVuelo" ng-repeat="itemVuelo in lstVuelos">
 		<!-- vuelo -->
-		<div class="col s12">
-			<div class="col m4 s12">
+		<div class="col s12" style="margin-top: 10px">
+			<div class="col m2 s12">
 				<b># Vuelo: </b>{{itemVuelo.idVuelo}}
 			</div>
-			<div class="col m4 s12">
+			<div class="col m3 s12">
 				<b>Aeronave: </b>{{itemVuelo.aeronave}} ({{itemVuelo.tipoAeronave}})
 			</div>
-			<div class="col m4 s12">
+			<div class="col m3 s12">
 				<b>Estado Vuelo: </b>{{itemVuelo.estadoVuelo}}
 			</div>
-		</div>
-		<div class="col s12">
-			<div class="col m6 s12">
+			<div class="col m4 s12">
 				<b>Tiempo Vuelo Aproximado: </b>{{itemVuelo.tiempoViaje}}
 			</div>
 		</div>
-		<div class="col s12">
+		<div class="col s12" style="margin-top: 10px">
 			<div class="col m8 s12">
 				<b>Origen: </b> <u>{{itemVuelo.origen}}</u>, {{itemVuelo.ciudadOrigen}}, {{itemVuelo.paisOrigen}}, {{itemVuelo.continenteOrigen}}
 			</div>
@@ -45,7 +69,7 @@
 				<b>Salida: </b> {{itemVuelo.fechaSalida}} - {{itemVuelo.horaSalida}}
 			</div>
 		</div>
-		<div class="col s12">
+		<div class="col s12" style="margin-top: 10px">
 			<div class="col m8 s12">
 				<b>Destino: </b> <u>{{itemVuelo.destino}}</u>, {{itemVuelo.ciudadDestino}}, {{itemVuelo.paisDestino}}, {{itemVuelo.continenteDestino}}
 			</div>
@@ -53,14 +77,14 @@
 				<b>Aterrizaje: </b> {{itemVuelo.fechaAterrizaje}} - {{itemVuelo.horaAterrizaje}}
 			</div>
 		</div>
-		<div class="col s12">
+		<div class="col s12" style="margin-top: 10px">
 			<button class="waves-effect waves-light btn" ng-click="itemVuelo.show=!itemVuelo.show">
-				<i class="material-icons left">all_inclusive</i>
-				Ver Pasajeros
+				<i class="material-icons left">people_outline</i>
+				Ver Pasajeros Referidos (<b>{{itemVuelo.lstPasajero.length}}</b>)
 			</button>
 		</div>
 
-		<!-- AERONAVES -->
+		<!-- PASAJEROS -->
 		<div class="col s12" style="margin-top: 20px" ng-show="itemVuelo.show">
 			<table class="responsive-table">
 				<thead>
@@ -74,6 +98,7 @@
 						<th>Forma Pago</th>
 						<th>Estado Reserv.</th>
 						<th>Precio Boleto</th>
+						<th>Acción</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -88,15 +113,19 @@
 						<td>{{item.edad}}</td>
 						<td>{{item.tipoPago}}</td>
 						<td>{{item.estadoReservacion}}</td>
-						<td>{{item.precioBoleto}}</td>
+						<td>$ {{item.precioBoleto}}</td>
+						<td style="min-width: 30px">
+							<button type="button" class="btn min red lighten-1 tooltip" data-title="Cancelar" 
+								ng-click="openCancelarReservacion( item )" ng-show="item.idEstadoReservacion==1">
+								<i class="material-icons">close</i>
+							</button>
+						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 </div>
-
-
 
 <!-- Modal AGREGAR PERSONA -->
 <div id="mdlPersona" class="modal bottom-sheet">
@@ -482,6 +511,75 @@
 		</form>			
 	</div>
 	<div class="modal-footer">
+		<button class="waves-effect btn-flat grey lighten-3 right modal-action modal-close">
+			<i class="material-icons left">close</i>
+			Salir
+		</button>
+	</div>
+</div>
+
+<!-- Modal CONSULTAS -->
+<div id="mdlConsultas" class="modal bottom-sheet">
+	<div class="modal-content">
+		<form class="col s12">
+			<h5>Monto total de comisiones</h5>
+			<div class="hr"></div>
+
+			<div class="row">
+				<div class="col s12">
+					<div class="col m4 s12">
+						<b class="col m5 s12">De Fecha</b>
+						<div class="col m7 s12">
+							<input type="text" class="datepicker" id="deFecha">
+						</div>
+					</div>
+					<div class="col m4 s12">
+						<b class="col m5 s12">Para Fecha</b>
+						<div class="col m7 s12">
+							<input type="text" class="datepicker" id="paraFecha">
+						</div>
+					</div>
+					<div class="col m4 s12">
+						<button type="button" class="waves-effect cyan darken-1 btn" ng-click="consultarComisiones()">
+							<i class="material-icons left">pageview</i> Consultar
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s12">
+					<h5>Total Comisiones: <b>$ {{comisionTotal | number:2}}</b></h5>
+				</div>
+			</div>
+		</form>			
+	</div>
+	<div class="modal-footer">
+		<button class="waves-effect btn-flat grey lighten-3 right modal-action modal-close">
+			<i class="material-icons left">close</i>
+			Salir
+		</button>
+	</div>
+</div>
+
+<!-- Modal CANCELAR RESERVACION -->
+<div id="mdlCancelar" class="modal bottom-sheet">
+	<div class="modal-content">
+		<h4>
+			<i class="material-icons">people</i>
+			Esta seguro de cancelar la Reservación?
+		</h4>
+		<div class="hr"></div>
+		<div class="row">
+			<div class="col s12">
+				<h5>Nombre: <b>{{reservacion.nombreCompleto}}</b></h5>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="waves-effect btn red lighten-1 left" ng-click="cancelarReservacion()">
+			<i class="material-icons left">delete</i>
+			Cancelar Reservación
+		</button>
 		<button class="waves-effect btn-flat grey lighten-3 right modal-action modal-close">
 			<i class="material-icons left">close</i>
 			Salir

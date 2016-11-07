@@ -92,7 +92,7 @@
 			<form class="col s12">
 				<div class="input-field"> 
 					<div class="form-group">
-						<label class="control-label">Código Pais</label>
+						<label class="control-label">Continente</label>
 						<input type="text" class="form-control" ng-model="newPais.codigoPais">
 					</div>
 				</div>

@@ -52,8 +52,9 @@ if ( !$session->valid() )
 				<li><a href="#/aeropuerto">Aeropuerto</a></li>
 				<li><a href="#/aeronave">Aeronave</a></li>
 				<li><a href="#/vuelo">Vuelo</a></li>
-				<li><a href="#/reservacion">Reservación</a></li>
+				<li><a href="#/reservacion">Agente</a></li>
 				<li><a href="#/usuario">Usuarios</a></li>
+				<li><a href="#/reportes">Reportes</a></li>
 				<li>
 					<a href="logout.php"><i class="material-icons">exit_to_app</i></a>
 				</li>
@@ -66,8 +67,9 @@ if ( !$session->valid() )
 				<li><a href="#/aeropuerto">Aeropuerto</a></li>
 				<li><a href="#/aeronave">Aeronave</a></li>
 				<li><a href="#/vuelo">Vuelo</a></li>
-				<li><a href="#/reservacion">Reservación</a></li>
+				<li><a href="#/reservacion">Agente</a></li>
 				<li><a href="#/usuario">Usuarios</a></li>
+				<li><a href="#/reportes">Reportes</a></li>
 				<li><a href="#logout.php">Salir</a></li>
 			</ul>
 		</div>
@@ -94,5 +96,6 @@ if ( !$session->valid() )
 <script src="js/vuelo.js"></script>
 <script src="js/reservacion.js"></script>
 <script src="js/usuario.js"></script>
+<script src="js/reportes.js"></script>
 </body>
 </html>

@@ -55,6 +55,24 @@ class Reservacion extends Query
 		}
 	}
 
+	public function cancelarReservacion( $idReservacion )
+	{
+		$idReservacion = (int)$idReservacion;
+
+		if ( !$idReservacion ) {
+			$this->error   = true;
+			$this->message = "# de Reservación no valido";
+		}
+		
+		if ( !$this->error ) {
+			$sql = "CALL cancelarReservacion( {$idReservacion}, '{$this->session->getUser()}' )";
+			$result = $this->query( $sql );
+			// RESULT
+			$this->error   = $result->error;
+			$this->message = $result->message;
+		}
+	}
+
 	/* CAT */
 	public function lstTipoPago()
 	{
@@ -184,8 +202,8 @@ class Reservacion extends Query
 		if ( $limit > 0 )
 			$limitResult = " LIMIT $limit ";
 
-		if ( $session->getProfile() == 1 )
-			$where .= " AND idUsuario = '{$session->getUser()}' ";
+		if ( $this->session->getProfile() == 1 )
+			$where .= " AND idUsuario = '{$this->session->getUser()}' ";
 
 		if ( strlen( $where ) ) {
 			$where = substr($where, 4);
@@ -209,6 +227,7 @@ class Reservacion extends Query
 					    idUsuario
 					FROM vstReservacion WHERE $where
 					$limitResult";
+					//echo $sql . "___";
 
 			$result = $this->queryLst( $sql );
 			while ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
@@ -217,6 +236,36 @@ class Reservacion extends Query
 		}
 
 		return (object)array( 'lst' => $lst, 'info' => $info, );
+	}
+
+	public function comisionTotal($deFecha, $paraFecha)
+	{
+		$datos = array( "montoTotal" => 0 );
+
+		if ( !( strtotime( $paraFecha ) <= strtotime("now") ) ) {
+			$this->error   = true;
+			$this->message = "La fecha final no debe ser mayor a la actual";
+		}
+
+		if ( !$this->error AND !( strtotime( $deFecha  ) <= strtotime( $paraFecha ) ) ) {
+			$this->error   = true;
+			$this->message = "La fecha inicial no es valida";
+		}
+
+		$sql = "SELECT SUM( montoComision )AS 'montoTotal' 
+					FROM comisionAgente 
+				WHERE fecha >= '{$deFecha}' AND fecha <= '{$paraFecha}' 
+					AND idUsuario = '{$this->session->getUser()}'";
+
+		if ( !$this->error ) {
+			$result = $this->queryLst( $sql );
+
+			if ( $result->data AND ( $row = $result->data->fetch_object() ) ) {
+				$datos["montoTotal"] = (double)$row->montoTotal;
+			}
+		}
+
+		return $datos;
 	}
 
 	public function getResponse()

@@ -1,21 +1,20 @@
 <?php
 @session_start();
 require 'class/session.class.php';
-$_SESSION['user'] = "rigo";
 
 $session = new Session();
 
 $data = json_decode( file_get_contents("php://input") );
 
 if ( !$session->valid() ) {
-//	echo json_encode( array( "response" => 0, "msg" => "Sesión expirada, ingrese nuevamente" ) );
-//	exit();
+	echo json_encode( array( "response" => 0, "msg" => "Sesión expirada, ingrese nuevamente" ) );
+	exit();
 }
 
 // SE VALIDA SI SE ESTA RECIBIENDO UNA ACCION VALIDA
 if ( !$data OR !isset( $data->action ) ) {
-	//echo json_encode( array( "response" => 0, "msg" => "Parametros invalidos" ) );
-	//exit();
+	echo json_encode( array( "response" => 0, "msg" => "Parametros invalidos" ) );
+	exit();
 }
 
 require 'class/conexion.class.php';
@@ -198,7 +197,7 @@ switch ( $data->action ) {
 		echo json_encode( $aeronave->lstIncidente( $data->idVuelo ) );
 		break;
 
-	// INICIO
+	// RESERVACION
 	case 'iniReservacion':
 		$reservacion = new Reservacion( $conexion, $session );
 		$aeronave    = new Aeronave( $conexion, $session );
@@ -218,6 +217,20 @@ switch ( $data->action ) {
 			$data->encargado, $data->idTipoPago );
 
 		echo json_encode( $reservacion->getResponse() );
+		break;
+
+	case 'cancelarReservacion':
+		$reservacion = new Reservacion( $conexion, $session );
+		$reservacion->cancelarReservacion( $data->idReservacion );
+
+		echo json_encode( $reservacion->getResponse() );
+		break;
+
+
+	case 'comisionTotal':
+		$reservacion = new Reservacion( $conexion, $session );
+
+		echo json_encode( $reservacion->comisionTotal( $data->deFecha, $data->paraFecha ) );
 		break;
 
 	// PERSON

@@ -24,14 +24,16 @@ miApp.controller('ctrlReservacion', function($scope, $http, $timeout){
 
 	// INI => RESERVACION
 	($scope.getVuelos = function () {
+		$("#loading").show();
+		
 		$http.post('controller.php', {
 			action : 'lstVueloAeronave',
-			deFecha : '2016-11-01',
-			paraFecha : '2016-11-23',
+			deFecha : $('#vuelosDeFecha').val(),
+			paraFecha : $('#vuelosParaFecha').val(),
 			detallePasajeros : true
 		})
 		.success(function ( data ) {
-			console.log( 'lstVuelo', data );
+			$("#loading").hide();
 			$scope.lstVuelos = data;
 		});
 	})();
@@ -215,6 +217,38 @@ miApp.controller('ctrlReservacion', function($scope, $http, $timeout){
 		$("#mdlReservacion").openModal();
 	};
 
+	// CANCELAR RESERVACION
+	$scope.reservacion = {};
+	$scope.openCancelarReservacion = function ( itemVuelo ) {
+		$scope.reservacion = angular.copy( itemVuelo );
+		$("#mdlCancelar").openModal();
+	};
+
+	// CANCELAR RESERVACION
+	$scope.cancelarReservacion = function () {
+		$("#loading").show();
+
+		$http.post('controller.php', {
+			action        : 'cancelarReservacion',
+			idReservacion : $scope.reservacion.idReservacion
+		})
+		.success(function ( data ) {
+			$("#loading").hide();
+
+			if ( data.response ) {
+				$scope.getVuelos();
+
+				Materialize.toast(data.message, 5000);
+				$("#mdlCancelar").closeModal();
+			}else{
+				Materialize.toast(data.message, 7000);
+			}
+		})
+		.error(function () {
+			$("#loading").hide();
+		});
+	};
+
 	$scope.reset = function () {
 		$scope.persona              = {};
 		$scope.destino              = {};
@@ -226,6 +260,39 @@ miApp.controller('ctrlReservacion', function($scope, $http, $timeout){
 		$scope.pasaporteResponsable = '';
 	};
 
+
+	// ABRIR DIALOGO PARA CONSULTAS
+	$scope.openConsultas = function () {
+		$("#mdlConsultas").openModal();
+	};
+
+	// CONSULTAR COMISIONES
+	$scope.comisionTotal = 0;
+	$scope.consultarComisiones = function () {
+		$("#loading").show();
+		$scope.comisionTotal = 0;
+
+		var deFecha = $("#deFecha").val(), 
+			paraFecha = $("#paraFecha").val();
+
+		$http.post('controller.php', {
+			action    : 'comisionTotal',
+			deFecha   : deFecha,
+			paraFecha : paraFecha,
+		})
+		.success(function ( data ) {
+			$("#loading").hide();
+
+			if ( data && data.montoTotal )
+				$scope.comisionTotal = data.montoTotal;
+		})
+		.error(function () {
+			$("#loading").hide();
+		});
+	};
+
+
+	////////// UBICACION ///////////
 	// LOCALIZACION
 	($scope.getContinentes = function () {
 		$scope.lstContinente = [];
@@ -372,11 +439,37 @@ miApp.controller('ctrlReservacion', function($scope, $http, $timeout){
 		selectYears: 80,
 		closeOnSelect: true,
   		closeOnClear: true,
+  		container: 'body',
   		max: 'today',
   		format: 'yyyy-mm-dd',
   		onSet: function(context) {
-			//$scope.edadPersona = moment( $scope.today ).diff( $("#fechaNacimiento").val(), 'years');
-			//$scope.$apply();
+		}
+	});
+
+	$('#deFecha,#paraFecha').pickadate({
+		selectMonths: false,
+		selectYears: false,
+		closeOnSelect: true,
+  		closeOnClear: true,
+  		hiddenName: true,
+  		showMonthsShort: false,
+  		container: 'body',
+  		max: 'today',
+  		format: 'yyyy-mm-dd',
+  		onSet: function(context) {
+		}
+	});
+
+	$('#vuelosDeFecha,#vuelosParaFecha').pickadate({
+		selectMonths: false,
+		selectYears: false,
+		closeOnSelect: true,
+  		closeOnClear: true,
+  		hiddenName: true,
+  		showMonthsShort: false,
+  		container: 'body',
+  		format: 'yyyy-mm-dd',
+  		onSet: function(context) {
 		}
 	});
 

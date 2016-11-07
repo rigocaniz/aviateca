@@ -591,14 +591,20 @@ class Aeronave extends Query
 					$row->tiempoViaje = $row->tiempoViaje . " minutos";
 
 				// DETALLE DE PASAJEROS
-				if ( $detallePasajeros )
+				if ( $detallePasajeros ) {
 					$row->lstPasajero = $reservacion->lstAsignacionPasajeros( $row->idVuelo )->lst;
 
-				// CLASES DISPONIBILIDAD POR VUELO
-				else
-					$row->lstClase = $disponibilidad->getDisponibilidad( $row->idVuelo );
+					// SI TIENE PASAJEROS EN ESTE VUELO
+					if ( count( $row->lstPasajero ) )
+						$lst[] = $row;
+				}
 
-				$lst[] = $row;
+				// CLASES DISPONIBILIDAD POR VUELO
+				else {
+					$row->lstClase = $disponibilidad->getDisponibilidad( $row->idVuelo );
+					$lst[] = $row;
+				}
+
 			}
 		}
 

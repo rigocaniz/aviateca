@@ -33,6 +33,11 @@ miApp.config(function($routeProvider) {
 		controller : 'ctrlUsuario'
 	})
 
+	.when('/reportes',{
+		templateUrl : 'views/frm.reportes.php',
+		controller : 'ctrlReportes'
+	})
+
 	.otherwise({
 		redirectTo: '/'
 	});
