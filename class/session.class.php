@@ -21,7 +21,7 @@ class Session
 
 	public function getProfile()
 	{
-		return $_SESSION['profile'];
+		return (int)$_SESSION['profile'];
 	}
 }
 ?>

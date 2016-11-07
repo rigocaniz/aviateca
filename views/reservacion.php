@@ -1,9 +1,18 @@
+<?php 
+	@session_start();
+	include '../class/session.class.php';
+	$session = new Session();
+	if ( $session->getProfile() != 1 ) {
+		echo "<h4 class='red-text text-darken-2'>No Tiene Acceso a este modulo</h4>";
+		exit();
+	}
+?>
 <div class="col m12">
 	<div class="row">
 		<blockquote class="row s12 m12">
 			<div class="col m6 s12">
 		 		<h5>
-		 			<i class="material-icons">people</i> Reservación
+		 			<i class="material-icons">people</i> Agente de Viaje
 		 		</h5>
 			</div>
 		</blockquote>
@@ -15,7 +24,7 @@
 				<i class="material-icons right">people</i>
 			</a>
 			<a class="waves-effect cyan darken-1 btn" ng-click="openConsultas()">
-				<i class="material-icons left">pageview</i> Consultas
+				<i class="material-icons left">pageview</i> Comisiones
 			</a>
 		</div>
 	</div>

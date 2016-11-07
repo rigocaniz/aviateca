@@ -1,3 +1,12 @@
+<?php 
+	@session_start();
+	include '../class/session.class.php';
+	$session = new Session();
+	if ( $session->getProfile() != 2 ) {
+		echo "<h4 class='red-text text-darken-2'>No Tiene Acceso a este modulo</h4>";
+		exit();
+	}
+?>
 <div class="col m12">
 	<div class="row">
 		<blockquote class="row s12 m12">
