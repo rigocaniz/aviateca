@@ -70,7 +70,7 @@ if ( !$session->valid() )
 				<li><a href="#/reservacion">Agente</a></li>
 				<li><a href="#/usuario">Usuarios</a></li>
 				<li><a href="#/reportes">Reportes</a></li>
-				<li><a href="#logout.php">Salir</a></li>
+				<li><a href="logout.php">Salir</a></li>
 			</ul>
 		</div>
 	</nav>
